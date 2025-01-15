@@ -14,22 +14,6 @@ class UsuarioService {
         });
 
         return Usuario;
-
-	async getUsuario() {
-		const Usuario = await prisma.Usuario.findMany( { orderBy: { Nome: 'asc' }}); 
-		
-		return Usuario;
-	}
-
-	async getUsuariobyEmail(wantedEmail: string) {
-		const user = await prisma.Usuario.findFirst({ where: { Email: wantedEmail } });
-		return user;
-	}
-
-	async getUserbyId(wantedId: string) {
-		const user = await prisma.Usuario.findFirst({ where: { id: wantedId } });
-		return user;
-	}
     }
 }
 
