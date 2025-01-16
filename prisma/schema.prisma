@@ -30,8 +30,18 @@ model Musica {
   AlbumID Int
   Num_Streams Int
   Data_Lancamento DateTime
+  Musicas_Usuario Musicas_Usuario[]
 }
 
+model Musicas_Usuario {
+  Usuario Usuario @relation(fields: [UsuarioID], references: [ID_Usuario])
+  UsuarioID Int
+  Musica Musica @relation(fields: [ID_Musica], references: [ID_Musica])
+  ID_Musica Int
+  Data_Criacao DateTime
+
+  @@id([UsuarioID, ID_Musica])
+}
 model Artista {
   ID_Artista Int @id @default(autoincrement())
   Nome String 
@@ -44,15 +54,9 @@ model Artista {
 model Album {
   ID_Album Int @id
   Artista Artista @relation(fields: [ArtistaID], references: [ID_Artista])
-  ArtistaID Int @unique
+  ArtistaID Int
   Data_Lancamento DateTime
   Num_Musicas Int
   Musicas Musica[]
-}
-model Musicas_Usuario {
-  Usuario Usuario @relation(fields: [UsuarioID], references: [ID_Usuario])
-  UsuarioID Int @id 
-  ID_Musica Int 
-  Data_Criacao DateTime
 }
 
