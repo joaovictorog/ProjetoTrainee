@@ -3,7 +3,7 @@ import prisma from "../../../config/prismaClient";
 
 class UsuarioService {
     async create(body: Usuario){
-        const Usuario = await prisma.Usuario.create({
+        const Usuario = await prisma.usuario.create({
             data: {
                 Email: body.Email,
                 Nome: body.Nome,
@@ -17,17 +17,17 @@ class UsuarioService {
     }
 
     async findAll() {
-        return await prisma.Usuario.findMany();
+        return await prisma.usuario.findMany();
     }
     
     async findById(id: number) {
-        return await prisma.Usuario.findUnique({
+        return await prisma.usuario.findUnique({
             where: { ID_Usuario: id },
         });
     }
 
     async update(id: number, body: Partial<Usuario>) {
-        const updatedUser = await prisma.Usuario.update({
+        const updatedUser = await prisma.usuario.update({
             where: { ID_Usuario: id },
             data: body,
         });
@@ -35,7 +35,7 @@ class UsuarioService {
     }
 
     async delete(id: number) {
-        const deletedUser = await prisma.Usuario.delete({
+        const deletedUser = await prisma.usuario.delete({
             where: { ID_Usuario: id },
         });
         return deletedUser;
