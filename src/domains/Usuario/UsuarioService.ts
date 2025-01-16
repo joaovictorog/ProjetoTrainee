@@ -12,9 +12,20 @@ class UsuarioService {
                 Foto: body.Foto
             }
         });
-
+    
         return Usuario;
     }
+
+    async findAll() {
+        return await prisma.Usuario.findMany();
+    }
+    
+    async findById(id: number) {
+        return await prisma.Usuario.findUnique({
+            where: { ID_Usuario: id },
+        });
+    }
+
 }
 
 export default new UsuarioService();
