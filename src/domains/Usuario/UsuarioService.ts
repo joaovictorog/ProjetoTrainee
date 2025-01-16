@@ -34,6 +34,13 @@ class UsuarioService {
         return updatedUser;
     }
 
+    async delete(id: number) {
+        const deletedUser = await prisma.Usuario.delete({
+            where: { ID_Usuario: id },
+        });
+        return deletedUser;
+    }
+
 }
 
 export default new UsuarioService();
