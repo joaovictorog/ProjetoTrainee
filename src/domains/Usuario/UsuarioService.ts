@@ -26,6 +26,14 @@ class UsuarioService {
         });
     }
 
+    async update(id: number, body: Partial<Usuario>) {
+        const updatedUser = await prisma.Usuario.update({
+            where: { ID_Usuario: id },
+            data: body,
+        });
+        return updatedUser;
+    }
+
 }
 
 export default new UsuarioService();
