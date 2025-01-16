@@ -1,0 +1,2 @@
+import { Musica } from "@prisma/client";
+import prisma from "../../../config/prismaClient";
