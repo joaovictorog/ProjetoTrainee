@@ -16,3 +16,20 @@ async function main() {
 }
 
 main()*/
+
+import ArtistaService from "./src/domains/Artista/ArtistaService";
+
+async function main() {
+    const body = {
+        ID_Artista: 5,
+        Nome: "TZ",
+        Foto: null,
+        Num_Streams: 40035676
+    }
+
+    const artista = await ArtistaService.create(body);
+
+    console.log(artista);
+}
+
+main()
