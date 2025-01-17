@@ -17,7 +17,7 @@ async function main() {
 
 main()*/
 
-import ArtistaService from "./src/domains/Artista/ArtistaService";
+/*import ArtistaService from "./src/domains/Artista/ArtistaService";
 
 async function main() {
     const body = {
@@ -32,4 +32,4 @@ async function main() {
     console.log(artista);
 }
 
-main()
+main()*/
