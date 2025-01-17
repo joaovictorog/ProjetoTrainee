@@ -14,8 +14,9 @@ async function main() {
 
     console.log(usuario)
 }
-
+    
 main()*/
+
 
 /*import ArtistaService from "./src/domains/Artista/ArtistaService";
 
