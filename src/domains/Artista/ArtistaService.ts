@@ -24,6 +24,14 @@ class ArtistaService {
         });
     }
 
+    async update(id: number, body: Partial<Artista>) {
+        const updatedArtist = await prisma.artista.update({
+            where: { ID_Artista: id },
+            data: body,
+        })
+        return updatedArtist;
+    }
+
 }
 
 export default new ArtistaService();
