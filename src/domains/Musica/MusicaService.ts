@@ -36,17 +36,19 @@ class MusicaService {
         });
     }
 
-    async update(id: number, data: Partial<Musica>) {
-        return await prisma.musica.update({
+    async update(id: number, body: Partial<Musica>) {
+        const updatedMusica = await prisma.musica.update({
             where: { ID_Musica: id },
-            data,
+            data: body,
         });
+        return updatedMusica;
     }
 
     async delete(id: number) {
-        return await prisma.musica.delete({
+        const deletedMusica = await prisma.musica.delete({
             where: { ID_Musica: id },
         });
+        return deletedMusica;
     }
 }
 
