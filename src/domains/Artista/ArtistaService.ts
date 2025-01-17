@@ -13,6 +13,17 @@ class ArtistaService {
 
         return Artista;
     }
+
+    async findAll() {
+        return await prisma.artista.findMany();
+    }
+
+    async findById(id: number) {
+        return await prisma.artista.findUnique({
+            where: { ID_Artista: id },
+        });
+    }
+
 }
 
 export default new ArtistaService();
