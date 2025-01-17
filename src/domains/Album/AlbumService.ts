@@ -3,8 +3,9 @@ import prisma from "../../../config/prismaClient";
 
 class AlbumService {
     async create(body: Album){
-        const album = await prisma.album.create({
+        const Album = await prisma.album.create({
             data: {
+                ID_Album: body.ID_Album,
                 Nome: body.Nome,
                 ArtistaID: body.ArtistaID,
                 Data_Lancamento: body.Data_Lancamento,
@@ -13,7 +14,7 @@ class AlbumService {
             }
         });
     
-        return album;
+        return Album;
     }
 
     async findAll() {
