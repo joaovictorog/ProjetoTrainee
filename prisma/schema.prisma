@@ -45,7 +45,7 @@ model Musicas_Usuario {
 model Artista {
   ID_Artista Int @id @default(autoincrement())
   Nome String 
-  Foto String
+  Foto String?
   Num_Streams Int
   Musicas Musica[]
   Albuns Album[]
