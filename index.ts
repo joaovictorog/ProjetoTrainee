@@ -4,7 +4,7 @@ async function main() {
     const body = {
         ID_Album: 1,
         Nome: "album_teste",
-        ArtistaID: 1,
+        ArtistaID: 3,
         Data_Lancamento: new Date("1973-01-01"),
         Capa: null,
         Num_Musicas: 13,
@@ -53,3 +53,24 @@ async function main() {
 }
 
 main()*/
+
+
+import MusicaService from "./src/domains/Musica/MusicaService";
+
+async function main() {
+    const body = {
+        ID_Musica: 4,
+        Nome: "musica_teste",
+        ArtistaID: 3,
+        Genero: "Pop",
+        AlbumID: 1,
+        Num_Streams: 500000,
+        Data_Lancamento: new Date("2023-01-01"),
+    };
+
+    const musica = await MusicaService.create(body);
+
+    console.log(musica);
+}
+
+main();

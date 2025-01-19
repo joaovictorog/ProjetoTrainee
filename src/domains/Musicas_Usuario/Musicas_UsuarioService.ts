@@ -1,7 +1,7 @@
 import { Musicas_Usuario } from "@prisma/client";
 import prisma from "../../../config/prismaClient";
 
-class MusicaUsuarioService {
+class MusicasUsuarioService {
     async create(body: Musicas_Usuario) {
         const musicaUsuario = await prisma.musicas_Usuario.create({
             data: {
@@ -54,4 +54,4 @@ class MusicaUsuarioService {
     }
 }
 
-export default new MusicaUsuarioService();
+export default new MusicasUsuarioService();
