@@ -21,7 +21,7 @@ main()*/
 
 async function main() {
     const body = {
-        ID_Usuario: 1,
+        ID_Usuario: 2,
         Email: "sljflksjl@gmail.com",
         Nome: "Luiz", 
         Senha: "1234",
@@ -41,7 +41,7 @@ main()*/
 
 async function main() {
     const body = {
-        ID_Artista: 5,
+        ID_Artista: 3,
         Nome: "TZ",
         Foto: null,
         Num_Streams: 40035676
@@ -55,7 +55,7 @@ async function main() {
 main()*/
 
 
-import MusicaService from "./src/domains/Musica/MusicaService";
+/*import MusicaService from "./src/domains/Musica/MusicaService";
 
 async function main() {
     const body = {
@@ -73,4 +73,21 @@ async function main() {
     console.log(musica);
 }
 
-main();
+main();*/
+
+
+/*import MusicasUsuarioService from "./src/domains/Musicas_Usuario/Musicas_UsuarioService";
+
+async function main() {
+    const body = {
+        UsuarioID: 2,
+        ID_Musica: 1,
+        Data_Criacao: new Date("2023-01-01"),
+    };
+
+    const musicasUsuario = await MusicasUsuarioService.create(body);
+
+    console.log(musicasUsuario);
+}
+
+main();*/
