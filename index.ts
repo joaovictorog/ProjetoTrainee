@@ -4,7 +4,7 @@ async function main() {
     const body = {
         ID_Album: 1,
         Nome: "album_teste",
-        ArtistaID: 1,
+        ArtistaID: 3,
         Data_Lancamento: new Date("1973-01-01"),
         Capa: null,
         Num_Musicas: 13,
@@ -21,7 +21,7 @@ main()*/
 
 async function main() {
     const body = {
-        ID_Usuario: 1,
+        ID_Usuario: 2,
         Email: "sljflksjl@gmail.com",
         Nome: "Luiz", 
         Senha: "1234",
@@ -41,7 +41,7 @@ main()*/
 
 async function main() {
     const body = {
-        ID_Artista: 5,
+        ID_Artista: 3,
         Nome: "TZ",
         Foto: null,
         Num_Streams: 40035676
@@ -53,3 +53,41 @@ async function main() {
 }
 
 main()*/
+
+
+/*import MusicaService from "./src/domains/Musica/MusicaService";
+
+async function main() {
+    const body = {
+        ID_Musica: 4,
+        Nome: "musica_teste",
+        ArtistaID: 3,
+        Genero: "Pop",
+        AlbumID: 1,
+        Num_Streams: 500000,
+        Data_Lancamento: new Date("2023-01-01"),
+    };
+
+    const musica = await MusicaService.create(body);
+
+    console.log(musica);
+}
+
+main();*/
+
+
+/*import MusicasUsuarioService from "./src/domains/Musicas_Usuario/Musicas_UsuarioService";
+
+async function main() {
+    const body = {
+        UsuarioID: 2,
+        ID_Musica: 1,
+        Data_Criacao: new Date("2023-01-01"),
+    };
+
+    const musicasUsuario = await MusicasUsuarioService.create(body);
+
+    console.log(musicasUsuario);
+}
+
+main();*/
