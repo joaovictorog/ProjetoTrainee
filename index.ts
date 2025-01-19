@@ -1,3 +1,22 @@
+/*import AlbumService from "./src/domains/Album/AlbumService";
+
+async function main() {
+    const body = {
+        ID_Album: 1,
+        Nome: "album_teste",
+        ArtistaID: 1,
+        Data_Lancamento: new Date("1973-01-01"),
+        Capa: null,
+        Num_Musicas: 13,
+
+    }
+
+    const album = await AlbumService.create(body);
+
+    console.log(album);
+}
+main()*/
+
 /*import UsuarioService from "./src/domains/Usuario/UsuarioService";
 
 async function main() {

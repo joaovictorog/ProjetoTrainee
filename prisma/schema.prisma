@@ -52,10 +52,12 @@ model Artista {
 }
 
 model Album {
-  ID_Album Int @id
+  ID_Album Int @id @default(autoincrement())
+  Nome String
   Artista Artista @relation(fields: [ArtistaID], references: [ID_Artista])
   ArtistaID Int
   Data_Lancamento DateTime
+  Capa String?
   Num_Musicas Int
   Musicas Musica[]
 }
