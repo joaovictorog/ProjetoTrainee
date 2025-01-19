@@ -43,4 +43,15 @@ class MusicaUsuarioService {
         });
         return musicaUsuario;
     }
+
+    async delete(usuarioId: number, musicaId: number) {
+        const musicaUsuario = await prisma.musicas_Usuario.delete({
+            where: {
+                UsuarioID_ID_Musica: { UsuarioID: usuarioId, ID_Musica: musicaId },
+            },
+        });
+        return musicaUsuario;
+    }
 }
+
+export default new MusicaUsuarioService();
