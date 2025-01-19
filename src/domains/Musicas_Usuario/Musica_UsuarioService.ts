@@ -12,4 +12,25 @@ class MusicaUsuarioService {
         });
         return musicaUsuario;
     }
+
+    async findAll() {
+        return await prisma.musicas_Usuario.findMany({
+            include: {
+                Usuario: true,
+                Musica: true,
+            },
+        });
+    }
+
+    async findById(usuarioId: number, musicaId: number) {
+        return await prisma.musicas_Usuario.findUnique({
+            where: {
+                UsuarioID_ID_Musica: { UsuarioID: usuarioId, ID_Musica: musicaId },
+            },
+            include: {
+                Usuario: true,
+                Musica: true,
+            },
+        });
+    }
 }
