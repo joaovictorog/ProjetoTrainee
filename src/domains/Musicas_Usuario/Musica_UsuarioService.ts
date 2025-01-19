@@ -33,4 +33,14 @@ class MusicaUsuarioService {
             },
         });
     }
+
+    async update(usuarioId: number, musicaId: number, body: Partial<Musicas_Usuario>) {
+        const musicaUsuario = await prisma.musicas_Usuario.update({
+            where: {
+                UsuarioID_ID_Musica: { UsuarioID: usuarioId, ID_Musica: musicaId },
+            },
+            data: body,
+        });
+        return musicaUsuario;
+    }
 }
