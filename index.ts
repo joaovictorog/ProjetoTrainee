@@ -1,3 +1,12 @@
+import { app } from "./config/expressConfig";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+app.listen(process.env.PORT, () => {
+    console.log("Servidor rodando!");
+})
+
 /*import AlbumService from "./src/domains/Album/AlbumService";
 
 async function main() {
