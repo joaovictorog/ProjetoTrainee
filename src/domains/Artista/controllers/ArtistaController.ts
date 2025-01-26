@@ -11,3 +11,21 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 });
+
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const artistas = await ArtistaService.findAll();
+        res.json(artistas);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const artista = await ArtistaService.findById(Number(req.params.id));
+        res.json(artista);
+    } catch (error) {
+        next(error);
+    }
+});
