@@ -11,3 +11,21 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 });
+
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const usuarios = await UsuarioService.findAll();
+        res.json(usuarios);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const usuario = await UsuarioService.findById(Number(req.params.id));
+        res.json(usuario);
+    } catch (error) {
+        next(error);
+    }
+});
