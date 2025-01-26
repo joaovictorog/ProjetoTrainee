@@ -29,3 +29,12 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 });
+
+router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const artistaAtualizado = await ArtistaService.update(Number(req.params.id), req.body);
+        res.json(artistaAtualizado);
+    } catch (error) {
+        next(error);
+    }
+});
