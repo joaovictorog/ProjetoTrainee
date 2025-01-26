@@ -29,3 +29,12 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 });
+
+router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const usuarioAtualizado = await UsuarioService.update(Number(req.params.id), req.body);
+        res.json(usuarioAtualizado);
+    } catch (error) {
+        next(error);
+    }
+});
