@@ -38,3 +38,14 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 });
+
+router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const usuarioDeletado = await UsuarioService.delete(Number(req.params.id));
+        res.json(usuarioDeletado);
+    } catch (error) {
+        next(error);
+    }
+});
+
+export default router;
