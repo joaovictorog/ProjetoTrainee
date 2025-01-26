@@ -1,5 +1,5 @@
 import { Musica } from "@prisma/client";
-import prisma from "../../../config/prismaClient";
+import prisma from "../../../../config/prismaClient";
 
 class MusicaService {
     async create(body: Musica){
