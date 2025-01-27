@@ -37,7 +37,7 @@ router.put("/:id", async (req:Request, res:Response, next:NextFunction) => {
     } catch (error) {
         next(error)
     }
-})
+});
 
 router.delete("/:id", async (req:Request, res:Response, next:NextFunction) => {
     try {
@@ -46,4 +46,6 @@ router.delete("/:id", async (req:Request, res:Response, next:NextFunction) => {
     } catch (error) {
         next(error)
     }
-})
+});
+
+export default router;
