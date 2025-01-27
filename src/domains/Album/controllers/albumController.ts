@@ -20,3 +20,13 @@ router.get("/:id", async (req:Request, res:Response, next:NextFunction) => {
         next(error);
    } 
 });
+
+router.post("/", async (req:Request, res:Response, next:NextFunction) => {
+   try {
+    const novoAlbum = await AlbumService.create(req.body)
+    res.status(201).json(novoAlbum)
+   } catch (error) {
+    next(error)
+   } 
+});
+
