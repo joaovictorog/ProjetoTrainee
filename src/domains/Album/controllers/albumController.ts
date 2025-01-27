@@ -11,3 +11,12 @@ router.get("/", async (req:Request, res:Response, next:NextFunction) => {
         next(error);
     }
 });
+
+router.get("/:id", async (req:Request, res:Response, next:NextFunction) => {
+   try {
+        const album = await AlbumService.findById(Number(req.params.id))
+        res.json(album);
+   } catch (error) {
+        next(error);
+   } 
+});
