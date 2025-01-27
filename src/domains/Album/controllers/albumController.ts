@@ -30,3 +30,11 @@ router.post("/", async (req:Request, res:Response, next:NextFunction) => {
    } 
 });
 
+router.put("/:id", async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        const updatedAlbum = await AlbumService.update(Number(req.params.id), req.body)
+        res.json(updatedAlbum)
+    } catch (error) {
+        next(error)
+    }
+})
