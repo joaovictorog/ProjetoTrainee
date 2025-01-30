@@ -8,7 +8,7 @@ class UsuarioService {
                 Email: body.Email,
                 Nome: body.Nome,
                 Senha: body.Senha,
-                Plano: body.Plano,
+                isAdmin: body.isAdmin,
                 Foto: body.Foto
             }
         });
