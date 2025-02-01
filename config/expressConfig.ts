@@ -1,6 +1,7 @@
 import cors, { CorsOptions } from "cors";
 import dotenv from "dotenv";
 import express, { Express } from "express";
+import cookieParser from 'cookie-parser';
 
 import UsuarioRouter from "../src/domains/Usuario/controllers/UsuarioController";
 import ArtistaRouter from "../src/domains/Artista/controllers/ArtistaController";
@@ -18,6 +19,7 @@ const options: CorsOptions = {
 };
 
 app.use(cors(options));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
