@@ -3,6 +3,22 @@ import { Usuario } from "@prisma/client";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { TokenError } from "../../errors/TokenError";
 
+function generateJWT(user: Usuario, res: Response) {
+    const body = {
+        id: user.ID_Usuario,
+        email: user.Email,
+        nome: user.Nome,
+        isAdmin: user.isAdmin
+    };
+
+    const token = sign({user: body}, process.env.SECRET_KEY || ""/*, {expiresIn: process.env.JWT_EXPIRATION}*/);
+
+    res.cookie("jwt", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development"
+    })
+}
+
 function cookieExtractor(req: Request) {
     let token = null;
     if(req.cookies) {
