@@ -1,7 +1,11 @@
+import prisma from "../../config/prismaClient";
+import statusCodes from "../../utils/constants/statusCodes";
 import { Request, Response, NextFunction } from "express";
 import { Usuario } from "@prisma/client";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { TokenError } from "../../errors/TokenError";
+import { PermissionError } from "../../errors/PermissionError";
+import { compare } from "bcrypt";
 
 function generateJWT(user: Usuario, res: Response) {
     const body = {
@@ -41,6 +45,32 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction) {
         }
 
         next();
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function login(req: Request, res: Response, next: NextFunction) {
+    try {
+        const user = await prisma.usuario.findUnique({
+            where: {
+                Email: req.body.email
+            }
+        });
+
+        if(!user) {
+            throw new PermissionError("Email e/ou senha incorretos!")
+        }
+
+        const match = compare(req.body.password, user.Senha);
+
+        if(!match) {
+            throw new PermissionError("Email e/ou senha incorretos!");
+        }
+
+        generateJWT(user, res);
+
+        res.status(statusCodes.SUCCESS).json("Login realizado com sucesso!");
     } catch (error) {
         next(error);
     }
