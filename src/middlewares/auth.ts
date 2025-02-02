@@ -50,11 +50,31 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction) {
     }
 }
 
+export function checkRole(allowedRoles: string[]) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const user = req.user;
+
+            if(allowedRoles.includes('admin') && user.isAdmin) {
+                return next();
+            }
+
+            if(allowedRoles.includes('user') && !user.isAdmin) {
+                return next();
+            }
+
+            throw new TokenError("Permissão insuficiente para realizar essa ação.")
+        } catch (error) {
+            next(error);
+        }
+    }
+}
+
 export async function login(req: Request, res: Response, next: NextFunction) {
     try {
         const user = await prisma.usuario.findUnique({
             where: {
-                Email: req.body.email
+                Email: req.body.Email
             }
         });
 
