@@ -55,11 +55,11 @@ export function checkRole(allowedRoles: string[]) {
         try {
             const user = req.user;
 
-            if(allowedRoles.includes('admin') && user.isAdmin) {
+            if(allowedRoles.includes("admin") && user.isAdmin) {
                 return next();
             }
 
-            if(allowedRoles.includes('user') && !user.isAdmin) {
+            if(allowedRoles.includes("user") && !user.isAdmin) {
                 return next();
             }
 
