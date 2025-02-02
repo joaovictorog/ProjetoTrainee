@@ -1,12 +1,13 @@
 import { Router, Request, Response, NextFunction } from "express";
 import UsuarioService from "../services/UsuarioService";
+import statusCodes from "../../../../utils/constants/statusCodes";
 
 const router = Router();
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const novoUsuario = await UsuarioService.create(req.body);
-        res.status(201).json(novoUsuario);
+        res.status(statusCodes.SUCCESS).json(novoUsuario);
     } catch (error) {
         next(error);
     }
@@ -15,7 +16,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarios = await UsuarioService.findAll();
-        res.json(usuarios);
+        res.status(statusCodes.SUCCESS).json(usuarios);
     } catch (error) {
         next(error);
     }
@@ -24,7 +25,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuario = await UsuarioService.findById(Number(req.params.id));
-        res.json(usuario);
+        res.status(statusCodes.SUCCESS).json(usuario);
     } catch (error) {
         next(error);
     }
@@ -33,7 +34,7 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
 router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioAtualizado = await UsuarioService.update(Number(req.params.id), req.body);
-        res.json(usuarioAtualizado);
+        res.status(statusCodes.SUCCESS).json(usuarioAtualizado);
     } catch (error) {
         next(error);
     }
@@ -42,7 +43,7 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
 router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioDeletado = await UsuarioService.delete(Number(req.params.id));
-        res.json(usuarioDeletado);
+        res.status(statusCodes.SUCCESS).json(usuarioDeletado);
     } catch (error) {
         next(error);
     }

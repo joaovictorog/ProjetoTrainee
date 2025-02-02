@@ -15,7 +15,7 @@ model Usuario {
   Email String @unique
   Nome  String
   Senha String
-  Plano String
+  isAdmin Boolean @default(false)
   Foto  String?
   Musicas Musicas_Usuario[]
 }
