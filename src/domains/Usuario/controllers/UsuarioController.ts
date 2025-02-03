@@ -1,11 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
 import UsuarioService from "../services/UsuarioService";
 import statusCodes from "../../../../utils/constants/statusCodes";
-import { verifyJWT, checkRole } from "../../../../middlewares/auth";
+import { verifyJWT, checkRole } from "../../../middlewares/auth";
 
 const router = Router();
 
-// Criar conta (usuário normal) - não requer autenticação
 router.post("/create", async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (req.body.isAdmin) {
@@ -18,7 +17,7 @@ router.post("/create", async (req: Request, res: Response, next: NextFunction) =
     }
 });
 
-router.get("/", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Response, next: NextFunction) => {
+router.get("/", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarios = await UsuarioService.findAll();
         res.status(statusCodes.SUCCESS).json(usuarios);
@@ -36,7 +35,7 @@ router.get("/account", verifyJWT, async (req: Request, res: Response, next: Next
     }
 });
 
-router.get("/:id", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Response, next: NextFunction) => {
+router.get("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuario = await UsuarioService.findById(Number(req.params.id));
         res.status(statusCodes.SUCCESS).json(usuario);
@@ -54,7 +53,7 @@ router.put("/account/update", verifyJWT, async (req: Request, res: Response, nex
     }
 });
 
-router.put("/update/:id", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Response, next: NextFunction) => {
+router.put("/update/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioAtualizado = await UsuarioService.update(Number(req.params.id), req.body, req.user);
         res.status(statusCodes.SUCCESS).json(usuarioAtualizado);
@@ -81,7 +80,7 @@ router.delete("/account/delete", verifyJWT, async (req: Request, res: Response, 
     }
 });
 
-router.delete("/delete/:id", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Response, next: NextFunction) => {
+router.delete("/delete/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioDeletado = await UsuarioService.delete(Number(req.params.id), req.user);
         res.status(statusCodes.SUCCESS).json(usuarioDeletado);
