@@ -42,31 +42,31 @@ class UsuarioService {
         return usuario;    
     }
 
-    async update(id: number, body: Partial<Usuario>, currentUser: Usuario) {
+    async update(body: Partial<Usuario>, currentUser: Usuario) {
+        const id = currentUser.ID_Usuario;
+    
         const existingUser = await prisma.usuario.findUnique({
             where: { ID_Usuario: id },
         });
-
+    
         if (!existingUser) {
             throw new QueryError(`Usuário com ID ${id} não encontrado.`);
         }
-
-        if (!currentUser.isAdmin && currentUser.ID_Usuario !== id) {
-            throw new InvalidParamError("Você só pode editar sua própria conta.");
-        }
-
+    
         if (!currentUser.isAdmin && body.hasOwnProperty("isAdmin")) {
             throw new InvalidParamError("Você não tem permissão para alterar o campo isAdmin.");
         }
-
+    
         if (body.Senha) {
             body.Senha = await this.encryptPassword(body.Senha);
         }
-
+    
         const updatedUser = await prisma.usuario.update({
             where: { ID_Usuario: id },
             data: body,
         });
+    
+        return updatedUser;
 
         return updatedUser;
     }    
