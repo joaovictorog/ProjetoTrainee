@@ -1,52 +1,95 @@
-import { Router, Request, Response, NextFunction } from "express";
-import UsuarioService from "../services/UsuarioService";
-import statusCodes from "../../../../utils/constants/statusCodes";
+import { Usuario } from "@prisma/client";
+import prisma from "../../../../config/prismaClient";
+import bcrypt from "bcrypt";
+import { QueryError } from "../../../../errors/QueryError";
+import { InvalidParamError } from "../../../../errors/InvalidParamError";
 
-const router = Router();
-
-router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const novoUsuario = await UsuarioService.create(req.body);
-        res.status(statusCodes.SUCCESS).json(novoUsuario);
-    } catch (error) {
-        next(error);
+class UsuarioService {
+    async encryptPassword(password: string) {
+        const saltRounds = 10;
+        const encrypted = await bcrypt.hash(password, saltRounds);
+        return encrypted;
     }
-});
 
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const usuarios = await UsuarioService.findAll();
-        res.status(statusCodes.SUCCESS).json(usuarios);
-    } catch (error) {
-        next(error);
+    async create(body: Usuario) {
+        const encrypted = await this.encryptPassword(body.Senha);
+        const usuario = await prisma.usuario.create({
+            data: {
+                Email: body.Email,
+                Nome: body.Nome,
+                Senha: encrypted,
+                isAdmin: body.isAdmin,
+                Foto: body.Foto
+            }
+        });
+    
+        return usuario;
     }
-});
 
-router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const usuario = await UsuarioService.findById(Number(req.params.id));
-        res.status(statusCodes.SUCCESS).json(usuario);
-    } catch (error) {
-        next(error);
+    async findAll() {
+        return await prisma.usuario.findMany();
     }
-});
-
-router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const usuarioAtualizado = await UsuarioService.update(Number(req.params.id), req.body);
-        res.status(statusCodes.SUCCESS).json(usuarioAtualizado);
-    } catch (error) {
-        next(error);
+    
+    async findById(id: number) {
+        const usuario = await prisma.usuario.findUnique({
+            where: { ID_Usuario: id },
+        });
+    
+        if (!usuario) {
+            throw new QueryError(`Usuário com ID ${id} não encontrado.`);
+        }
+    
+        return usuario;    
     }
-});
 
-router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const usuarioDeletado = await UsuarioService.delete(Number(req.params.id));
-        res.status(statusCodes.SUCCESS).json(usuarioDeletado);
-    } catch (error) {
-        next(error);
+    async update(id: number, body: Partial<Usuario>, currentUser: Usuario) {
+        const existingUser = await prisma.usuario.findUnique({
+            where: { ID_Usuario: id },
+        });
+
+        if (!existingUser) {
+            throw new QueryError(`Usuário com ID ${id} não encontrado.`);
+        }
+
+        if (!currentUser.isAdmin && currentUser.ID_Usuario !== id) {
+            throw new InvalidParamError("Você só pode editar sua própria conta.");
+        }
+
+        if (!currentUser.isAdmin && body.hasOwnProperty("isAdmin")) {
+            throw new InvalidParamError("Você não tem permissão para alterar o campo isAdmin.");
+        }
+
+        if (body.Senha) {
+            body.Senha = await this.encryptPassword(body.Senha);
+        }
+
+        const updatedUser = await prisma.usuario.update({
+            where: { ID_Usuario: id },
+            data: body,
+        });
+
+        return updatedUser;
+    }    
+
+    async delete(id: number, currentUser: Usuario) {
+        const existingUser = await prisma.usuario.findUnique({
+            where: { ID_Usuario: id },
+        });
+
+        if (!existingUser) {
+            throw new QueryError(`Usuário com ID ${id} não encontrado.`);
+        }
+
+        if (!currentUser.isAdmin && currentUser.ID_Usuario !== id) {
+            throw new InvalidParamError("Você só pode excluir sua própria conta.");
+        }
+
+        await prisma.usuario.delete({
+            where: { ID_Usuario: id },
+        });
+
+        return { message: "Usuário deletado com sucesso!" };
     }
-});
+}
 
-export default router;
+export default new UsuarioService();
