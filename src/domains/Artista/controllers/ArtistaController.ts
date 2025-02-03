@@ -3,7 +3,7 @@ import ArtistaService from "../services/ArtistaService";
 
 const router = Router();
 
-router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+router.post("/create", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const novoArtista = await ArtistaService.create(req.body);
         res.status(201).json(novoArtista);
@@ -30,7 +30,7 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
     }
 });
 
-router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
+router.put("/update/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artistaAtualizado = await ArtistaService.update(Number(req.params.id), req.body);
         res.json(artistaAtualizado);
@@ -39,7 +39,7 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     }
 });
 
-router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
+router.delete("/delete/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artistaDeletado = await ArtistaService.delete(Number(req.params.id));
         res.json(artistaDeletado);
