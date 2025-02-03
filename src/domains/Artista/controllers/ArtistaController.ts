@@ -5,7 +5,7 @@ import { checkRole, verifyJWT } from "../../../middlewares/auth";
 
 const router = Router();
 
-router.post("/", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
+router.post("/create", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const novoArtista = await ArtistaService.create(req.body);
         res.status(statusCodes.SUCCESS).json(novoArtista);
@@ -32,7 +32,7 @@ router.get("/:id", verifyJWT, async (req: Request, res: Response, next: NextFunc
     }
 });
 
-router.put("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
+router.put("/update/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artistaAtualizado = await ArtistaService.update(Number(req.params.id), req.body);
         res.status(statusCodes.SUCCESS).json(artistaAtualizado);
@@ -41,7 +41,7 @@ router.put("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Re
     }
 });
 
-router.delete("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
+router.delete("/delete/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artistaDeletado = await ArtistaService.delete(Number(req.params.id));
         res.status(statusCodes.SUCCESS).json(artistaDeletado);
