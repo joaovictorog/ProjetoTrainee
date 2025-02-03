@@ -15,7 +15,11 @@ class ArtistaService {
     }
 
     async findAll() {
-        return await prisma.artista.findMany();
+        return await prisma.artista.findMany({
+            orderBy: {
+                Nome: 'asc'
+            }
+        });
     }
 
     async findById(id: number) {
