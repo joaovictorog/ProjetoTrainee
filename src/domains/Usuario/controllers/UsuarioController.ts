@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import UsuarioService from "../services/UsuarioService";
 import statusCodes from "../../../../utils/constants/statusCodes";
-import { verifyJWT, checkRole } from "../../../../middlewares/auth"; // Importando os middlewares
+import { verifyJWT, checkRole } from "../../../../middlewares/auth";
 
 const router = Router();
 
@@ -18,9 +18,6 @@ router.post("/create", async (req: Request, res: Response, next: NextFunction) =
     }
 });
 
-// Login - não requer autenticação (não implementado aqui, mas mencionado na atividade)
-
-// Listar todos os usuários (somente ADMIN)
 router.get("/", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarios = await UsuarioService.findAll();
@@ -30,7 +27,6 @@ router.get("/", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Respons
     }
 });
 
-// Visualizar conta do próprio usuário (Usuário e Admin)
 router.get("/account", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuario = await UsuarioService.findById(req.user.ID_Usuario);
@@ -40,7 +36,6 @@ router.get("/account", verifyJWT, async (req: Request, res: Response, next: Next
     }
 });
 
-// Visualizar usuário específico (somente ADMIN)
 router.get("/:id", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuario = await UsuarioService.findById(Number(req.params.id));
@@ -50,7 +45,6 @@ router.get("/:id", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Resp
     }
 });
 
-// Editar conta do próprio usuário ou permitir que ADMIN edite qualquer conta
 router.put("/account/update", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioAtualizado = await UsuarioService.update(req.user.ID_Usuario, req.body, req.user);
@@ -60,7 +54,6 @@ router.put("/account/update", verifyJWT, async (req: Request, res: Response, nex
     }
 });
 
-// Editar qualquer usuário (somente ADMIN)
 router.put("/update/:id", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioAtualizado = await UsuarioService.update(Number(req.params.id), req.body, req.user);
@@ -70,7 +63,6 @@ router.put("/update/:id", verifyJWT, checkRole("ADMIN"), async (req: Request, re
     }
 });
 
-// Alterar senha do próprio usuário
 router.put("/account/password", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioAtualizado = await UsuarioService.update(req.user.ID_Usuario, { Senha: req.body.Senha }, req.user);
@@ -80,7 +72,6 @@ router.put("/account/password", verifyJWT, async (req: Request, res: Response, n
     }
 });
 
-// Excluir conta do próprio usuário
 router.delete("/account/delete", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioDeletado = await UsuarioService.delete(req.user.ID_Usuario, req.user);
@@ -90,7 +81,6 @@ router.delete("/account/delete", verifyJWT, async (req: Request, res: Response, 
     }
 });
 
-// Excluir qualquer usuário (somente ADMIN)
 router.delete("/delete/:id", verifyJWT, checkRole("ADMIN"), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioDeletado = await UsuarioService.delete(Number(req.params.id), req.user);
