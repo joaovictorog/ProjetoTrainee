@@ -1,9 +1,10 @@
 import { Artista } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
+import { QueryError } from "../../../../errors/QueryError";
 
 class ArtistaService {
     async create(body: Artista) {
-        const Artista = await prisma.artista.create({
+        const artista = await prisma.artista.create({
             data: {
                 Nome: body.Nome,
                 Foto: body.Foto,
@@ -11,7 +12,7 @@ class ArtistaService {
             }
         });
 
-        return Artista;
+        return artista;
     }
 
     async findAll() {
@@ -23,24 +24,48 @@ class ArtistaService {
     }
 
     async findById(id: number) {
-        return await prisma.artista.findUnique({
+        const artista = await prisma.artista.findUnique({
             where: { ID_Artista: id },
         });
+
+        if(!artista) {
+            throw new QueryError(`Artista com ID ${id} não encontrado.`);
+        }
+
+        return artista;
     }
 
     async update(id: number, body: Partial<Artista>) {
+        const existingArtist = await prisma.artista.findUnique({
+            where: { ID_Artista: id },
+        });
+
+        if(!existingArtist) {
+            throw new QueryError(`Artista com ID ${id} não encontrado.`);
+        }
+
         const updatedArtist = await prisma.artista.update({
             where: { ID_Artista: id },
             data: body,
         });
+
         return updatedArtist;
     }
 
     async delete(id: number) {
-        const deletedArtist = await prisma.artista.delete({
+        const existingArtist = await prisma.artista.findUnique({
             where: { ID_Artista: id },
         });
-        return deletedArtist;
+
+        if(!existingArtist) {
+            throw new QueryError(`Artista com ID ${id} não encontrado.`);
+        }
+
+        await prisma.artista.delete({
+            where: { ID_Artista: id },
+        });
+
+        return { message: "Artista deletado com sucesso!" };
     }
 
 }
