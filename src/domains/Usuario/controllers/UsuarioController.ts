@@ -5,7 +5,7 @@ import { verifyJWT, checkRole } from "../../../middlewares/auth";
 
 const router = Router();
 
-router.post("/create", async (req: Request, res: Response, next: NextFunction) => {
+router.post("/admin/create", async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (req.body.isAdmin) {
             return res.status(statusCodes.FORBIDDEN).json({ message: "Não é permitido criar conta de administrador." });
