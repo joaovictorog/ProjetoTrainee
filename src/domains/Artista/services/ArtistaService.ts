@@ -6,7 +6,7 @@ class ArtistaService {
     async create(body: Artista) {
         const artista = await prisma.artista.create({
             data: {
-                Nome: body.Nome,
+                Nome: body.Nome.charAt(0).toUpperCase() + body.Nome.substring(1),
                 Foto: body.Foto,
                 Num_Streams: body.Num_Streams
             }
