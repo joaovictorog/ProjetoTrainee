@@ -1,6 +1,6 @@
 import { app } from "./config/expressConfig";
 import dotenv from "dotenv";
-
+// apague essa linha e aperte ctrl + s para restart no server, na volta ctrl + z
 dotenv.config();
 
 app.listen(process.env.PORT, () => {
