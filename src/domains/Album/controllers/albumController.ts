@@ -1,10 +1,12 @@
 import { Router, Request, Response, NextFunction } from "express";
 import AlbumService from "../services/AlbumService";
 import statusCodes from "../../../../utils/constants/statusCodes";
+import { checkRole, verifyJWT } from "../../../middlewares/auth";
+
 
 const router = Router()
 
-router.get("/", async (req:Request, res:Response, next:NextFunction) => {
+router.get("/", verifyJWT, async (req:Request, res:Response, next:NextFunction) => {
     try {
         const albuns = await AlbumService.findAll()
         res.json(albuns);
@@ -13,7 +15,7 @@ router.get("/", async (req:Request, res:Response, next:NextFunction) => {
     }
 });
 
-router.get("/:id", async (req:Request, res:Response, next:NextFunction) => {
+router.get("/:id", verifyJWT, async (req:Request, res:Response, next:NextFunction) => {
     try {
         const album = await AlbumService.findById(Number(req.params.id))
         res.json(album);
@@ -22,7 +24,7 @@ router.get("/:id", async (req:Request, res:Response, next:NextFunction) => {
     } 
 });
 
-router.post("/create", async (req:Request, res:Response, next:NextFunction) => {
+router.post("/create", verifyJWT, checkRole(["admin"]), async (req:Request, res:Response, next:NextFunction) => {
     try {
         const novoAlbum = await AlbumService.create(req.body)
         res.status(statusCodes.SUCCESS).json(novoAlbum)
@@ -31,7 +33,7 @@ router.post("/create", async (req:Request, res:Response, next:NextFunction) => {
     } 
 });
 
-router.put("/update/:id", async (req:Request, res:Response, next:NextFunction) => {
+router.put("/update/:id", verifyJWT, checkRole(["admin"]),async (req:Request, res:Response, next:NextFunction) => {
     try {
         const updatedAlbum = await AlbumService.update(Number(req.params.id), req.body)
         res.status(statusCodes.SUCCESS).json(updatedAlbum)
@@ -40,7 +42,7 @@ router.put("/update/:id", async (req:Request, res:Response, next:NextFunction) =
     }
 });
 
-router.delete("/delete/:id", async (req:Request, res:Response, next:NextFunction) => {
+router.delete("/delete/:id", verifyJWT, checkRole(["admin"]), async (req:Request, res:Response, next:NextFunction) => {
     try {
         const deletedAlbum = await AlbumService.delete(Number(req.params.id))
         res.status(statusCodes.SUCCESS).json(deletedAlbum)
