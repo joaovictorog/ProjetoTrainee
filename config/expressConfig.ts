@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser';
 import UsuarioRouter from "../src/domains/Usuario/controllers/UsuarioController";
 import ArtistaRouter from "../src/domains/Artista/controllers/ArtistaController";
 import MusicaRouter from "../src/domains/Musica/controllers/MusicaController";
-import MusicaUsuarioRouter from "../src/domains/Musicas_Usuario/controllers/Musica_UsuarioController";
 import AlbumRouter from "../src/domains/Album/controllers/albumController";
 
 export const app: Express = express();
@@ -29,4 +28,3 @@ app.use("/api/albuns", AlbumRouter);
 app.use("/api/usuarios", UsuarioRouter);
 app.use("/api/artistas", ArtistaRouter);
 app.use("/api/musicas", MusicaRouter);
-app.use("/api/musicas_usuario", MusicaUsuarioRouter);

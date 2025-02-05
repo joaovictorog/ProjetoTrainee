@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import AlbumService from "../services/AlbumService";
+import statusCodes from "../../../../utils/constants/statusCodes";
 
 const router = Router()
 
@@ -21,28 +22,28 @@ router.get("/:id", async (req:Request, res:Response, next:NextFunction) => {
     } 
 });
 
-router.post("/", async (req:Request, res:Response, next:NextFunction) => {
+router.post("/create", async (req:Request, res:Response, next:NextFunction) => {
     try {
         const novoAlbum = await AlbumService.create(req.body)
-        res.status(201).json(novoAlbum)
+        res.status(statusCodes.SUCCESS).json(novoAlbum)
     } catch (error) {
         next(error)
     } 
 });
 
-router.put("/:id", async (req:Request, res:Response, next:NextFunction) => {
+router.put("/update/:id", async (req:Request, res:Response, next:NextFunction) => {
     try {
         const updatedAlbum = await AlbumService.update(Number(req.params.id), req.body)
-        res.json(updatedAlbum)
+        res.status(statusCodes.SUCCESS).json(updatedAlbum)
     } catch (error) {
         next(error)
     }
 });
 
-router.delete("/:id", async (req:Request, res:Response, next:NextFunction) => {
+router.delete("/delete/:id", async (req:Request, res:Response, next:NextFunction) => {
     try {
         const deletedAlbum = await AlbumService.delete(Number(req.params.id))
-        res.json(deletedAlbum)
+        res.status(statusCodes.SUCCESS).json(deletedAlbum)
     } catch (error) {
         next(error)
     }
