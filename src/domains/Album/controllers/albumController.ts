@@ -2,20 +2,23 @@ import { Router, Request, Response, NextFunction } from "express";
 import AlbumService from "../services/AlbumService";
 import statusCodes from "../../../../utils/constants/statusCodes";
 import { checkRole, verifyJWT } from "../../../middlewares/auth";
+import { ordenarAlfabetica } from "../../../../utils/functions/ordemAlfabetica";
+
 
 
 const router = Router()
 
-router.get("/", verifyJWT, async (req:Request, res:Response, next:NextFunction) => {
+router.get("/", verifyJWT, checkRole(["admin", "user"]), async (req:Request, res:Response, next:NextFunction) => {
     try {
-        const albuns = await AlbumService.findAll()
+        let albuns = await AlbumService.findAll()
+        ordenarAlfabetica(albuns);
         res.json(albuns);
     } catch (error) {
         next(error);
     }
 });
 
-router.get("/:id", verifyJWT, async (req:Request, res:Response, next:NextFunction) => {
+router.get("/:id", checkRole(["admin", "user"]),verifyJWT, async (req:Request, res:Response, next:NextFunction) => {
     try {
         const album = await AlbumService.findById(Number(req.params.id))
         res.json(album);
