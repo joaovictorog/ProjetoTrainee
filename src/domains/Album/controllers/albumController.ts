@@ -4,15 +4,13 @@ import statusCodes from "../../../../utils/constants/statusCodes";
 import { checkRole, verifyJWT } from "../../../middlewares/auth";
 import { ordenarAlfabetica } from "../../../../utils/functions/ordemAlfabetica";
 
-
-
 const router = Router()
 
 router.get("/", verifyJWT, checkRole(["admin", "user"]), async (req:Request, res:Response, next:NextFunction) => {
     try {
         let albuns = await AlbumService.findAll()
         ordenarAlfabetica(albuns);
-        res.json(albuns);
+        res.status(statusCodes.SUCCESS).json(albuns);
     } catch (error) {
         next(error);
     }
@@ -21,7 +19,7 @@ router.get("/", verifyJWT, checkRole(["admin", "user"]), async (req:Request, res
 router.get("/:id", checkRole(["admin", "user"]),verifyJWT, async (req:Request, res:Response, next:NextFunction) => {
     try {
         const album = await AlbumService.findById(Number(req.params.id))
-        res.json(album);
+        res.status(statusCodes.SUCCESS).json(album);
     } catch (error) {
         next(error);
     } 
