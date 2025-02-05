@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import UsuarioService from "../services/UsuarioService";
 import statusCodes from "../../../../utils/constants/statusCodes";
 import { verifyJWT, checkRole, login } from "../../../middlewares/auth";
+import { ordenarAlfabetica } from "../../../../utils/functions/ordemAlfabetica";
 
 const router = Router();
 
@@ -22,6 +23,7 @@ router.post("/admin/create", async (req: Request, res: Response, next: NextFunct
 router.get("/", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarios = await UsuarioService.findAll();
+        ordenarAlfabetica(usuarios);
         res.status(statusCodes.SUCCESS).json(usuarios);
     } catch (error) {
         next(error);
