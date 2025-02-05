@@ -17,6 +17,16 @@ class MusicaService {
         return Musica;
     }
 
+    async findFromArtist(id: number){
+        return await prisma.musica.findMany({
+            where: { ArtistaID: id},
+            include: {
+                Artista: true,
+                Album: true,
+            }
+        })
+    }
+
     async findAll() {
         return await prisma.musica.findMany({
             include: {
