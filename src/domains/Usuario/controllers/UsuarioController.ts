@@ -26,7 +26,7 @@ router.get("/", verifyJWT, checkRole(["admin"]), async (req: Request, res: Respo
     }
 });
 
-router.get("/account", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+router.get("/account", verifyJWT, checkRole(["admin", "user"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuario = await UsuarioService.findById(req.user.ID_Usuario);
         res.status(statusCodes.SUCCESS).json(usuario);
@@ -44,7 +44,7 @@ router.get("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Re
     }
 });
 
-router.put("/account/update", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+router.put("/account/update", verifyJWT, checkRole(["admin", "user"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioAtualizado = await UsuarioService.update(req.user.ID_Usuario, req.body, req.user);
         res.status(statusCodes.SUCCESS).json(usuarioAtualizado);
@@ -62,7 +62,7 @@ router.put("/update/:id", verifyJWT, checkRole(["admin"]), async (req: Request, 
     }
 });
 
-router.put("/account/password", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+router.put("/account/password", verifyJWT, checkRole(["admin", "user"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioAtualizado = await UsuarioService.update(req.user.ID_Usuario, { Senha: req.body.Senha }, req.user);
         res.status(statusCodes.SUCCESS).json(usuarioAtualizado);
@@ -71,7 +71,7 @@ router.put("/account/password", verifyJWT, async (req: Request, res: Response, n
     }
 });
 
-router.delete("/account/delete", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
+router.delete("/account/delete", verifyJWT, checkRole(["admin", "user"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const usuarioDeletado = await UsuarioService.delete(req.user.ID_Usuario, req.user);
         res.status(statusCodes.SUCCESS).json(usuarioDeletado);
