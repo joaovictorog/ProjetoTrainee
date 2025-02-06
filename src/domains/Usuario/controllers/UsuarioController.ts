@@ -3,15 +3,20 @@ import UsuarioService from "../services/UsuarioService";
 import statusCodes from "../../../../utils/constants/statusCodes";
 import { verifyJWT, checkRole, login, logout, isLoggedIn } from "../../../middlewares/auth";
 import { ordenarAlfabetica } from "../../../../utils/functions/ordemAlfabetica";
+import { QueryError } from "../../../../errors/QueryError";
 
 const router = Router();
 
-router.post("/create", async (req: Request, res: Response, next: NextFunction) => {
+router.post("/create", isLoggedIn ,async (req: Request, res: Response, next: NextFunction) => {
     try {
+        let novoUsuario = await UsuarioService.findByEmail(req.body.Email);
+        if(novoUsuario !== null){
+            throw new QueryError("Já existe um usuario com esse email")
+        }
         if (req.body.isAdmin) {
             return res.status(statusCodes.FORBIDDEN).json({ message: "Não é permitido criar conta de administrador." });
         }
-        const novoUsuario = await UsuarioService.create(req.body);
+        novoUsuario = await UsuarioService.create(req.body);
         res.status(statusCodes.SUCCESS).json(novoUsuario);
     } catch (error) {
         next(error);

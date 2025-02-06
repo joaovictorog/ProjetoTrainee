@@ -35,10 +35,6 @@ class UsuarioService {
             where: { Email: email },
         });
     
-        if (!usuario) {
-            throw new QueryError(`Usuário com ID ${email} não encontrado.`);
-        }
-    
         return usuario;
     }
 
