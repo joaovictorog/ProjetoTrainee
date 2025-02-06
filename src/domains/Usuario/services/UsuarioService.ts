@@ -29,7 +29,19 @@ class UsuarioService {
     async findAll() {
         return await prisma.usuario.findMany();
     }
+
+    async findByEmail(email: string) {
+        const usuario = await prisma.usuario.findUnique({
+            where: { Email: email },
+        });
     
+        if (!usuario) {
+            throw new QueryError(`Usuário com ID ${email} não encontrado.`);
+        }
+    
+        return usuario;
+    }
+
     async findById(id: number) {
         const usuario = await prisma.usuario.findUnique({
             where: { ID_Usuario: id },
