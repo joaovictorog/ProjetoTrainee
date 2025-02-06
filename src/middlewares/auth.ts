@@ -9,13 +9,13 @@ import { compare } from "bcrypt";
 
 function generateJWT(user: Usuario, res: Response) {
     const body = {
-        id: user.ID_Usuario,
-        email: user.Email,
-        nome: user.Nome,
+        ID_Usuario: user.ID_Usuario,
+        Email: user.Email,
+        Nome: user.Nome,
         isAdmin: user.isAdmin
     };
 
-    const token = sign({user: body}, process.env.SECRET_KEY || ""/*, {expiresIn: process.env.JWT_EXPIRATION}*/);
+    const token = sign({user: body}, process.env.SECRET_KEY || "")//, {expiresIn: process.env.JWT_EXPIRATION});
 
     res.cookie("jwt", token, {
         httpOnly: true,

@@ -32,6 +32,7 @@ router.get("/", verifyJWT, checkRole(["admin"]), async (req: Request, res: Respo
 
 router.get("/account", verifyJWT, checkRole(["admin", "user"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
+        console.log(req.user);
         const usuario = await UsuarioService.findById(req.user.ID_Usuario);
         res.status(statusCodes.SUCCESS).json(usuario);
     } catch (error) {
