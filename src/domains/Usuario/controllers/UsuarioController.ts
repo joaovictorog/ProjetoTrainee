@@ -1,12 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
 import UsuarioService from "../services/UsuarioService";
 import statusCodes from "../../../../utils/constants/statusCodes";
-import { verifyJWT, checkRole, login } from "../../../middlewares/auth";
+import { verifyJWT, checkRole, login, logout } from "../../../middlewares/auth";
 import { ordenarAlfabetica } from "../../../../utils/functions/ordemAlfabetica";
 
 const router = Router();
 
 router.post("/login", login)
+
+router.post("/logout", verifyJWT, checkRole(["admin", "user"]), logout)
 
 router.post("/admin/create", async (req: Request, res: Response, next: NextFunction) => {
     try {
