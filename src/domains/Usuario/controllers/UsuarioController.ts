@@ -6,15 +6,24 @@ import { ordenarAlfabetica } from "../../../../utils/functions/ordemAlfabetica";
 
 const router = Router();
 
+router.post("/create", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (req.body.isAdmin) {
+            return res.status(statusCodes.FORBIDDEN).json({ message: "Não é permitido criar conta de administrador." });
+        }
+        const novoUsuario = await UsuarioService.create(req.body);
+        res.status(statusCodes.SUCCESS).json(novoUsuario);
+    } catch (error) {
+        next(error);
+    }
+})
+
 router.post("/login", isLoggedIn ,login)
 
 router.post("/logout", verifyJWT, checkRole(["admin", "user"]), logout)
 
 router.post("/admin/create", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        if (req.body.isAdmin) {
-            return res.status(statusCodes.FORBIDDEN).json({ message: "Não é permitido criar conta de administrador." });
-        }
         const novoUsuario = await UsuarioService.create(req.body);
         res.status(statusCodes.SUCCESS).json(novoUsuario);
     } catch (error) {
