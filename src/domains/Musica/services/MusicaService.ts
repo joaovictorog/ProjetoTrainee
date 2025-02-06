@@ -1,7 +1,7 @@
 import { Musica } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
-import ArtistaService from "../../Artista/services/ArtistaService";
 import { QueryError } from "../../../../errors/QueryError";
+import { InvalidRouteError } from "../../../../errors/InvalidRouteError";
 
 class MusicaService {
     async create(body: Musica){
@@ -47,7 +47,7 @@ class MusicaService {
             where: {ID_Musica:id}
         })
         if(!existingMusica){
-            throw new QueryError('Não existe musica com esse id')
+            throw new InvalidRouteError('Não existe musica com esse id')
         }
         const musica = await prisma.musica.findUnique({
             where: { ID_Musica: id },
@@ -64,7 +64,7 @@ class MusicaService {
             where: {ID_Musica:id}
         })
         if(!existingMusica){
-            throw new QueryError('Não existe musica com esse id')
+            throw new InvalidRouteError('Não existe musica com esse id')
         }
         const updatedMusica = await prisma.musica.update({
             where: { ID_Musica: id },
@@ -78,7 +78,7 @@ class MusicaService {
             where: {ID_Musica:id}
         })
         if(!existingMusica){
-            throw new QueryError('Não existe musica com esse id')
+            throw new InvalidRouteError('Não existe musica com esse id')
         }
         const deletedMusica = await prisma.musica.delete({
             where: { ID_Musica: id },
