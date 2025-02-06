@@ -18,7 +18,7 @@ router.get("/", verifyJWT, checkRole(["admin", "user"]), async (req:Request, res
 
 router.get("/:id", checkRole(["admin", "user"]),verifyJWT, async (req:Request, res:Response, next:NextFunction) => {
     try {
-        const album = await AlbumService.findById(Number(req.params.id))
+        const album = await AlbumService.findById(Number(req.params.id));
         res.status(statusCodes.SUCCESS).json(album);
     } catch (error) {
         next(error);

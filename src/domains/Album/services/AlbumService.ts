@@ -1,5 +1,6 @@
 import { Album } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
+import { QueryError } from "../../../../errors/QueryError";
 
 class AlbumService {
     async create(body: Album){
@@ -31,7 +32,7 @@ class AlbumService {
     }
     
     async findById(id: number) {
-        return await prisma.album.findUnique({
+        const album = await prisma.album.findUnique({
             where: { ID_Album: id },
             select: {
                 ID_Album: false,
@@ -42,18 +43,40 @@ class AlbumService {
                 Data_Lancamento: true
             }
         });
+        if(!album){
+            throw new QueryError('Album com ID informado não encontrado');
+        }
+
+        return album;
     }
 
     async update(id: number, body: Partial<Album>) {
-        const updatedAlbum = await prisma.album.update({
+        let updatedAlbum = await prisma.album.findUnique({
+            where: { ID_Album: id}
+        })
+
+        if(!updatedAlbum){
+            throw new QueryError('Album com ID informado não encontrado');
+        }
+        
+        updatedAlbum = await prisma.album.update({
             where: { ID_Album: id },
             data: body,
         });
+
         return updatedAlbum;
     }
 
     async delete(id: number) {
-        const deletedAlbum = await prisma.album.delete({
+        let deletedAlbum = await prisma.album.findUnique({
+            where: { ID_Album: id}
+        })
+
+        if(!deletedAlbum){
+            throw new QueryError('Album com ID informado não encontrado');
+        }
+
+        deletedAlbum = await prisma.album.delete({
             where: { ID_Album: id },
         });
         return deletedAlbum;
