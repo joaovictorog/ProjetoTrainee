@@ -1,18 +1,34 @@
 import { Router, Request, Response, NextFunction } from "express";
 import UsuarioService from "../services/UsuarioService";
 import statusCodes from "../../../../utils/constants/statusCodes";
-import { verifyJWT, checkRole, login } from "../../../middlewares/auth";
+import { verifyJWT, checkRole, login, logout } from "../../../middlewares/auth";
 import { ordenarAlfabetica } from "../../../../utils/functions/ordemAlfabetica";
+import { QueryError } from "../../../../errors/QueryError";
 
 const router = Router();
 
-router.post("/login", login)
-
-router.post("/admin/create", async (req: Request, res: Response, next: NextFunction) => {
+router.post("/create" ,async (req: Request, res: Response, next: NextFunction) => {
     try {
+        let novoUsuario = await UsuarioService.findByEmail(req.body.Email);
+        if(novoUsuario !== null){
+            throw new QueryError("Já existe um usuario com esse email")
+        }
         if (req.body.isAdmin) {
             return res.status(statusCodes.FORBIDDEN).json({ message: "Não é permitido criar conta de administrador." });
         }
+        novoUsuario = await UsuarioService.create(req.body);
+        res.status(statusCodes.SUCCESS).json(novoUsuario);
+    } catch (error) {
+        next(error);
+    }
+})
+
+router.post("/login" , login)
+
+router.post("/logout", verifyJWT, checkRole(["admin", "user"]), logout)
+
+router.post("/admin/create", async (req: Request, res: Response, next: NextFunction) => {
+    try {
         const novoUsuario = await UsuarioService.create(req.body);
         res.status(statusCodes.SUCCESS).json(novoUsuario);
     } catch (error) {
@@ -39,6 +55,7 @@ router.get("/account", verifyJWT, checkRole(["admin", "user"]), async (req: Requ
         next(error);
     }
 });
+
 
 router.get("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -29,7 +29,15 @@ class UsuarioService {
     async findAll() {
         return await prisma.usuario.findMany();
     }
+
+    async findByEmail(email: string) {
+        const usuario = await prisma.usuario.findUnique({
+            where: { Email: email },
+        });
     
+        return usuario;
+    }
+
     async findById(id: number) {
         const usuario = await prisma.usuario.findUnique({
             where: { ID_Usuario: id },
@@ -91,5 +99,6 @@ class UsuarioService {
         return { message: "Usuário deletado com sucesso!" };
     }
 }
+
 
 export default new UsuarioService();

@@ -15,7 +15,7 @@ function generateJWT(user: Usuario, res: Response) {
         isAdmin: user.isAdmin
     };
 
-    const token = sign({user: body}, process.env.SECRET_KEY || "")//, {expiresIn: process.env.JWT_EXPIRATION});
+    const token = sign({user: body}, process.env.SECRET_KEY || "", {expiresIn: Number(process.env.JWT_EXPIRATION)} );
 
     res.cookie("jwt", token, {
         httpOnly: true,
@@ -67,6 +67,25 @@ export function checkRole(allowedRoles: string[]) {
         } catch (error) {
             next(error);
         }
+    }
+}
+
+export async function logout(req:Request, res:Response, next:NextFunction) {
+    try {
+        const token = cookieExtractor(req);
+
+        if(token) {
+            const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
+            req.user = decoded.user;
+        }
+
+        if(req.user == null) {
+            throw new TokenError("Você precisa estar logado para realizar essa ação!")
+        }
+        res.clearCookie("jwt");
+        res.status(statusCodes.SUCCESS).json("Logout realizado com sucesso!")
+    } catch (error) {
+        next(error)
     }
 }
 
