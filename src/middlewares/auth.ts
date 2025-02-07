@@ -89,6 +89,23 @@ export async function logout(req:Request, res:Response, next:NextFunction) {
     }
 }
 
+export function notLoggedIn(req: Request, res: Response, next: NextFunction) {
+    try {
+        const token = cookieExtractor(req);
+
+        if(token) {
+            const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
+            req.user = decoded.user;
+            
+            res.status(statusCodes.BAD_REQUEST).json("Você já está logado.");
+        } else {
+            next(); 
+        }
+    } catch (error) {
+        next(error);
+    }
+}
+
 export async function login(req: Request, res: Response, next: NextFunction) {
     try {
         const user = await prisma.usuario.findUnique({
