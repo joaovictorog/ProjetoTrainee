@@ -56,13 +56,23 @@ router.get("/account", verifyJWT, checkRole(["admin", "user"]), async (req: Requ
     }
 });
 
-router.get("/account/listen/:id", verifyJWT, checkRole(["admin", "user"]), async (req:Request, res:Response, next:NextFunction) => {
+router.post("/account/listen/:id", verifyJWT, checkRole(["admin", "user"]), async (req:Request, res:Response, next:NextFunction) => {
     try {
-        return await UsuarioService.listen(req.user.ID_Usuario, Number(req.params.id))
+        const musicaOuvida = await UsuarioService.listen(req.user.ID_Usuario, Number(req.params.id))
+        res.json(musicaOuvida).status(statusCodes.SUCCESS);
     } catch (error) {
         next(error)
     }
-})
+});
+
+router.delete("/account/unlisten/:id", verifyJWT, checkRole(["admin", "user"]), async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const musicaDesOuvida = await UsuarioService.unListen(req.user.ID_Usuario, Number(req.params.id))
+        res.json(musicaDesOuvida).status(statusCodes.SUCCESS);
+    } catch (error) {
+        next(error)
+    }
+});
 
 router.get("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
