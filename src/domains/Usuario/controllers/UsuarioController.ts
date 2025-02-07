@@ -5,6 +5,7 @@ import { verifyJWT, checkRole, login, logout, notLoggedIn } from "../../../middl
 import { ordenarAlfabetica } from "../../../../utils/functions/ordemAlfabetica";
 import { QueryError } from "../../../../errors/QueryError";
 
+
 const router = Router();
 
 router.post("/create" ,async (req: Request, res: Response, next: NextFunction) => {
@@ -23,7 +24,7 @@ router.post("/create" ,async (req: Request, res: Response, next: NextFunction) =
     }
 })
 
-router.post("/login" , notLoggedIn, login);
+router.post("/login" , login);
 
 router.post("/logout", verifyJWT, checkRole(["admin", "user"]), logout);
 
@@ -46,9 +47,27 @@ router.get("/", verifyJWT, checkRole(["admin"]), async (req: Request, res: Respo
     }
 });
 
+router.get("/account/musicas", verifyJWT, checkRole(["admin", "user"]), async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        const userWithMusicas = await UsuarioService.getUserMusicas(req.user.ID_Usuario)
+        res.json(userWithMusicas).status(statusCodes.SUCCESS);
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.put("/account/listen/:id", verifyJWT, checkRole(["admin", "user"]), async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        const AddMusica = await UsuarioService.updateMusicas(req.user.ID_Usuario, req.body, Number(req.params.id), req.user);
+        res.json(AddMusica).status(statusCodes.SUCCESS)
+    } catch (error) {
+        next(error)
+    }
+})
+
 router.get("/account", verifyJWT, checkRole(["admin", "user"]), async (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log(req.user);
+        //console.log(req.user);
         const usuario = await UsuarioService.findById(req.user.ID_Usuario);
         res.status(statusCodes.SUCCESS).json(usuario);
     } catch (error) {
