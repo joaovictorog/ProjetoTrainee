@@ -1,13 +1,13 @@
 import { Router, Request, Response, NextFunction } from "express";
 import UsuarioService from "../services/UsuarioService";
 import statusCodes from "../../../../utils/constants/statusCodes";
-import { verifyJWT, checkRole, login, logout, isLoggedIn } from "../../../middlewares/auth";
+import { verifyJWT, checkRole, login, logout } from "../../../middlewares/auth";
 import { ordenarAlfabetica } from "../../../../utils/functions/ordemAlfabetica";
 import { QueryError } from "../../../../errors/QueryError";
 
 const router = Router();
 
-router.post("/create", isLoggedIn ,async (req: Request, res: Response, next: NextFunction) => {
+router.post("/create" ,async (req: Request, res: Response, next: NextFunction) => {
     try {
         let novoUsuario = await UsuarioService.findByEmail(req.body.Email);
         if(novoUsuario !== null){
@@ -23,7 +23,7 @@ router.post("/create", isLoggedIn ,async (req: Request, res: Response, next: Nex
     }
 })
 
-router.post("/login", isLoggedIn ,login)
+router.post("/login" , login)
 
 router.post("/logout", verifyJWT, checkRole(["admin", "user"]), logout)
 
@@ -56,23 +56,6 @@ router.get("/account", verifyJWT, checkRole(["admin", "user"]), async (req: Requ
     }
 });
 
-router.post("/account/listen/:id", verifyJWT, checkRole(["admin", "user"]), async (req:Request, res:Response, next:NextFunction) => {
-    try {
-        const musicaOuvida = await UsuarioService.listen(req.user.ID_Usuario, Number(req.params.id))
-        res.json(musicaOuvida).status(statusCodes.SUCCESS);
-    } catch (error) {
-        next(error)
-    }
-});
-
-router.delete("/account/unlisten/:id", verifyJWT, checkRole(["admin", "user"]), async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const musicaDesOuvida = await UsuarioService.unListen(req.user.ID_Usuario, Number(req.params.id))
-        res.json(musicaDesOuvida).status(statusCodes.SUCCESS);
-    } catch (error) {
-        next(error)
-    }
-});
 
 router.get("/:id", verifyJWT, checkRole(["admin"]), async (req: Request, res: Response, next: NextFunction) => {
     try {

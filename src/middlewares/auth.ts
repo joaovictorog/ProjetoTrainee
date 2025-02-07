@@ -70,26 +70,6 @@ export function checkRole(allowedRoles: string[]) {
     }
 }
 
-export async function isLoggedIn(req: Request, res: Response, next: NextFunction) {
-    try {
-        const token = cookieExtractor(req);
-
-    if(token) {
-        const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
-        req.user = decoded.user;
-    }
-
-    if(req.user == null) {
-        return next();
-    } else {
-        throw new TokenError("Voce ja esta logado");
-    }
-    } catch (error) {
-        next(error)
-    }
-}
-
-
 export async function logout(req:Request, res:Response, next:NextFunction) {
     try {
         const token = cookieExtractor(req);
