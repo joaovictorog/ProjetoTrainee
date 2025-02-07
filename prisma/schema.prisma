@@ -37,7 +37,7 @@ model Artista {
   ID_Artista Int @id @default(autoincrement())
   Nome String 
   Foto String?
-  Num_Streams Int
+  Num_Streams BigInt
   Musicas Musica[]
   Albuns Album[]
 }
