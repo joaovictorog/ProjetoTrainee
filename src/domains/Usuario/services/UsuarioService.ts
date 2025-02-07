@@ -1,4 +1,4 @@
-import { Usuario } from "@prisma/client";
+import { Musica, Usuario } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 import bcrypt from "bcrypt";
 import { QueryError } from "../../../../errors/QueryError";
@@ -48,6 +48,77 @@ class UsuarioService {
         }
     
         return usuario;    
+    }
+
+    async getUserMusicas(id:number) {
+        const userWithMusicas = await prisma.usuario.findUnique({
+            where:{ID_Usuario: id}, select:{
+                Nome:true,
+                Email:true,
+                Senha:true,
+                Foto:true,
+                Musicas:true
+            }
+        });
+        if (!userWithMusicas) {
+            throw new QueryError(`Usuário com ID ${id} não encontrado.`);
+        }
+
+        return userWithMusicas
+    }
+
+    async updateMusicas(id_user: number, body: Partial<Usuario>, id_musica: number, currentUser: Usuario) {
+        const existingUser = await prisma.usuario.findUnique({
+            where: { ID_Usuario: id_user },
+        });
+    
+        if (!existingUser) {
+            throw new QueryError(`Usuário com ID ${id_user} não encontrado.`);
+        }
+    
+        if (!currentUser.isAdmin && currentUser.ID_Usuario !== id_user) {
+            throw new InvalidParamError("Você só pode editar sua própria conta.");
+        }
+    
+        if (!currentUser.isAdmin && body.hasOwnProperty("isAdmin")) {
+            throw new InvalidParamError("Você não tem permissão para alterar o campo isAdmin.");
+        }
+    
+        if (body.Senha) {
+            body.Senha = await this.encryptPassword(body.Senha);
+        }
+    
+        const updatedUser = await prisma.usuario.update({
+            where: { ID_Usuario: id_user },
+            data: {
+                Musicas: {
+                 connect: {
+                  ID_Musica: id_musica,
+                 },
+                },
+               }, select:{
+                ID_Usuario:true, Email:true, Nome:true, Musicas:true
+               }
+        });
+    
+        return updatedUser;
+    }
+
+    async deleteMusicas(id_user: number, id_musica:number) {
+        const updatedUser = await prisma.usuario.update({
+            where: { ID_Usuario: id_user },
+            data: {
+                Musicas: {
+                 disconnect: {
+                  ID_Musica: id_musica,
+                 },
+                },
+               }, select:{
+                ID_Usuario:true, Email:true, Nome:true, Musicas:true
+               }
+        });
+
+        return updatedUser
     }
 
     async update(id: number, body: Partial<Usuario>, currentUser: Usuario) {
