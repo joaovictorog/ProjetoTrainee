@@ -98,6 +98,39 @@ class UsuarioService {
 
         return { message: "Usuário deletado com sucesso!" };
     }
+
+    async listen(id_user:number, id_musica:number) {
+        const link = await prisma.usuario.update({
+            data: {
+             Musicas: {
+              connect: {
+               ID_Musica: id_musica,
+              },
+             },
+            },
+            where: {
+             ID_Usuario: id_user
+            }
+           });
+           return link;
+    }
+
+    async unListen(id_user:number, id_musica:number) {
+        const unlink = await prisma.usuario.update({
+            data: {
+             Musicas: {
+              disconnect: {
+               ID_Musica: id_musica,
+              },
+             },
+            },
+            where: {
+             ID_Usuario: id_user
+            }
+           });
+           return unlink;
+    }
 }
+
 
 export default new UsuarioService();
