@@ -15,7 +15,7 @@ function generateJWT(user: Usuario, res: Response) {
         isAdmin: user.isAdmin
     };
 
-    const token = sign({user: body}, process.env.SECRET_KEY || "")//, {expiresIn: process.env.JWT_EXPIRATION});
+    const token = sign({user: body}, process.env.SECRET_KEY || "", {expiresIn: Number(process.env.JWT_EXPIRATION)} );
 
     res.cookie("jwt", token, {
         httpOnly: true,
