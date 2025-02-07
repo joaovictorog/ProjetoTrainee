@@ -104,6 +104,23 @@ class UsuarioService {
         return updatedUser;
     }
 
+    async deleteMusicas(id_user: number, id_musica:number) {
+        const updatedUser = await prisma.usuario.update({
+            where: { ID_Usuario: id_user },
+            data: {
+                Musicas: {
+                 disconnect: {
+                  ID_Musica: id_musica,
+                 },
+                },
+               }, select:{
+                ID_Usuario:true, Email:true, Nome:true, Musicas:true
+               }
+        });
+
+        return updatedUser
+    }
+
     async update(id: number, body: Partial<Usuario>, currentUser: Usuario) {
         const existingUser = await prisma.usuario.findUnique({
             where: { ID_Usuario: id },
