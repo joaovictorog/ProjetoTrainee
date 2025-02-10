@@ -24,7 +24,7 @@ router.post("/create" ,async (req: Request, res: Response, next: NextFunction) =
     }
 })
 
-router.post("/login" ,/*notLoggedIn,*/ login);
+router.post("/login", notLoggedIn, login);
 
 router.post("/logout", verifyJWT, checkRole(["admin", "user"]), logout);
 
