@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  mysql: 
+    container_name: mySQL
+    image: ${IMAGE_BD}
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${PORT_DB}:${PORT_DB}"
+    expose:
+      - "${PORT_DB}"
+    networks:
+      - base_network
+    volumes:
+      - db_data: /var/lib/mysql
+    
+  api: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend_trainee
+    image: ${IMAGE_API}
+    ports:
+      - "${PORT_API}:${PORT_API}"
+    networks:
+      - base_network
+    volumes:
+      - .:/api
+    command: npm start
+    depends_on:
+      - mysql
+
+networks:
+  base_network:
+    driver: bridge
+
+volumes:
+  db_data:
