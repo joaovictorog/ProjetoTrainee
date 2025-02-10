@@ -102,12 +102,20 @@ export function notLoggedIn(req: Request, res: Response, next: NextFunction) {
         const token = cookieExtractor(req);
 
         if(token) {
-            const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
-            req.user = decoded.user;
-            
-            res.status(statusCodes.BAD_REQUEST).json("Você já está logado.");
+            try {
+                const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
+                req.user = decoded.user;
+
+                res.status(statusCodes.BAD_REQUEST).json("Você já está logado.");
+            } catch (error: any) {
+                if (error.name === "TokenExpiredError") {
+                    next();
+                } else {
+                    next(error);
+                }
+            }
         } else {
-            next(); 
+            next();
         }
     } catch (error) {
         next(error);
