@@ -2,33 +2,37 @@ version: '3.8'
 
 services:
   mysql: 
-    container_name: mySQL
-    image: ${IMAGE_BD}
+    container_name: mysql
+    image: mysql:latest
     environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+       MYSQL_DATABASE: database_projeto
+       MYSQL_ROOT_PASSWORD: trainee4
     ports:
-      - "${PORT_DB}:${PORT_DB}"
+      - '3306:3306'
     expose:
-      - "${PORT_DB}"
+      - '3306'
     networks:
       - base_network
+    env_file:
+      - ./.env
     volumes:
-      - db_data: /var/lib/mysql
+      - db_data:/var/lib/mysql
     
   api: 
     build:
       context: .
       dockerfile: Dockerfile
     container_name: backend_trainee
-    image: ${IMAGE_API}
+    image: backend_projeto
     ports:
-      - "${PORT_API}:${PORT_API}"
+      - '3030:3030'
     networks:
       - base_network
     volumes:
       - .:/api
     command: npm start
+    env_file:
+      - ./.env
     depends_on:
       - mysql
 
