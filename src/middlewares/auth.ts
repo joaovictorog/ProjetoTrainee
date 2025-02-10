@@ -36,12 +36,20 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction) {
         const token = cookieExtractor(req);
 
         if(token) {
-            const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
-            req.user = decoded.user;
+            try {
+                const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
+                req.user = decoded.user;
+            } catch (error: any) {
+                if (error.name === "TokenExpiredError") {
+                    res.status(statusCodes.UNAUTHORIZED).json("Token expirado. É preciso fazer login novamente.");
+                } else {
+                    next(error);
+                }
+            }
         }
 
         if(req.user == null) {
-            throw new TokenError("Você precisa estar logado para realizar essa ação!")
+            throw new TokenError("Você precisa estar logado para realizar essa ação!");
         }
 
         next();
