@@ -88,4 +88,115 @@ describe("UsuarioService", () => {
         });
     });
 
+    describe("getUserMusicas", () => {
+        test("recebe as músicas ouvidas pelo usuário ==> lista as músicas", async () => {
+            const usuario = {
+                ID_Usuario: 1,
+                Email: "teste@.com",
+                Nome: "usuario",
+                Senha: "encrypted",
+                isAdmin: false,
+                Foto: "jpg",
+                Musicas: [{
+                    ID_Musica: 1, 
+                    Nome: "New Sound", 
+                    ArtistaID: 1, 
+                    Genero: "POP", 
+                    AlbumID: 1, 
+                    Num_Streams: 10, 
+                    Data_Lancamento: new Date('2024-10-20 12:30:00')
+                }]
+            };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+
+            await expect(UsuarioService.getUserMusicas(1)).resolves.toEqual(usuario);
+        });
+
+        test("usuário não encontrado ==> lança QueryError", async () => {
+            prismaMock.usuario.findUnique.mockResolvedValue(null);
+
+            await expect(UsuarioService.getUserMusicas(1)).rejects.toThrow(QueryError);
+        });
+    });
+
+    describe("updateMusicas", () => {
+        test("tenta atualizar as músicas ouvidas pelo usuário ==> atualiza as músicas", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: true, Foto: "jpg",
+                Musicas: [] };
+            const musica = { ID_Musica: 1, Nome: "NewSong", ArtistaID: 1, Genero: "POP", AlbumID: 1, Num_Streams: 10, 
+                Data_Lancamento: new Date('2024-10-20 12:30:00') };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+            prismaMock.musica.findUnique.mockResolvedValue(musica);
+            prismaMock.usuario.update.mockResolvedValue(usuario);
+
+            await expect(UsuarioService.updateMusicas(1, usuario, 1, usuario)).resolves.toEqual(usuario);
+        });
+
+        test("tenta atualizar as músicas ouvidas pelo usuário sem ser admin ==> atualiza as músicas", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg",
+                Musicas: [] };
+            const musica = { ID_Musica: 1, Nome: "NewSong", ArtistaID: 1, Genero: "POP", AlbumID: 1, Num_Streams: 10, 
+                Data_Lancamento: new Date('2024-10-20 12:30:00') };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+            prismaMock.musica.findUnique.mockResolvedValue(musica);
+            prismaMock.usuario.update.mockResolvedValue(usuario);
+
+            await expect(UsuarioService.updateMusicas(1, usuario, 1, usuario)).rejects.toThrow(InvalidParamError);
+        });
+
+        test("música não encontrada ==> lança QueryError", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg" };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+            prismaMock.musica.findUnique.mockResolvedValue(null);
+
+            await expect(UsuarioService.updateMusicas(1, usuario, 1, usuario)).rejects.toThrow(QueryError);
+        });
+
+        test("usuário não encontrado ==> lança QueryError", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg" };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(null);
+
+            await expect(UsuarioService.updateMusicas(1, usuario, 1, usuario)).rejects.toThrow(QueryError);
+        });
+
+        test("tenta atualizar as músicas de outro usuario sem ser admin ==> lança InvalidParamError", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg" };
+
+            await expect(UsuarioService.updateMusicas(1, usuario, 1, usuario)).rejects.toThrow(QueryError);
+        });
+    });
+
+    describe("deleteMusicas", () => {
+        test("tenta remover música ouvida pelo usuário ==> remove música", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg" };
+            const musica = { ID_Musica: 1, Nome: "NewSong", ArtistaID: 1, Genero: "POP", AlbumID: 1, Num_Streams: 10, 
+                Data_Lancamento: new Date('2024-10-20 12:30:00') };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+            prismaMock.musica.findUnique.mockResolvedValue(musica);
+            prismaMock.usuario.update.mockResolvedValue(usuario);
+
+            await expect(UsuarioService.deleteMusicas(1, 1)).resolves.toEqual(usuario);
+        });
+
+        test("música não encontrada no usuário ==> lança QueryError", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg" };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+
+            await expect(UsuarioService.deleteMusicas(1, 1)).rejects.toThrow(QueryError);
+        });
+
+        test("usuário não encontrado ==> lança QueryError", async () => {
+            prismaMock.usuario.findUnique.mockResolvedValue(null);
+
+            await expect(UsuarioService.updateMusicas(1, null as any, 1, null as any)).rejects.toThrow(QueryError);
+        });
+    });
+
 });
