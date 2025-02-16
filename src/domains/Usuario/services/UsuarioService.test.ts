@@ -199,4 +199,41 @@ describe("UsuarioService", () => {
         });
     });
 
+    describe("update", () => {
+        test("fornce dados válidos de usuário ==> atualiza usuário", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: true, Foto: "jpg" };
+
+            const updatedUsuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario2", Senha: "encrypted", isAdmin: true, Foto: "jpg" };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+            prismaMock.usuario.update.mockResolvedValue(updatedUsuario);
+
+            await expect(UsuarioService.update(1, updatedUsuario, usuario)).resolves.toEqual(updatedUsuario);
+        });
+
+        test("usuário não encontrado ==> lança QueryError", async () => {
+            prismaMock.usuario.findUnique.mockResolvedValue(null);
+
+            await expect(UsuarioService.update(1, { Nome: "usuario2" }, null as any)).rejects.toThrow(QueryError);
+        });
+
+        test("tenta editar a conta de outro usuário sem ser admin ==> lança InvalidParamError", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg" };
+            
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+
+            await expect(UsuarioService.update(2, { Nome: "user" }, usuario)).rejects.toThrow(InvalidParamError);
+        });
+
+        test("tenta alterar o campo isAdmin sem ser admin ==> lança InvalidParamError", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg" };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+
+            await expect(UsuarioService.update(1, 
+                { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: true, Foto: "jpg" },
+                 usuario)).rejects.toThrow(InvalidParamError);
+        });
+    });
+
 });
