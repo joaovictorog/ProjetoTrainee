@@ -1,9 +1,24 @@
 import { Album } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 import { QueryError } from "../../../../errors/QueryError";
+import { InvalidParamError } from "../../../../errors/InvalidParamError";
+import ArtistaService from "../../Artista/services/ArtistaService";
 
 class AlbumService {
     async create(body: Album){
+        if(body.Nome == null){
+            throw new InvalidParamError("O album deve ter um nome!");
+        }
+
+        if(body.ArtistaID == null){
+            throw new InvalidParamError("O album deve pertencer a um artista!");
+        }
+
+        const existingArtista = await ArtistaService.findById(body.ArtistaID);
+        if(!existingArtista){
+            throw new InvalidParamError("O arista com id ${body.ArtistaID} não existe!");
+        }
+        
         const Album = await prisma.album.create({
             data: {
                 ID_Album: body.ID_Album,
@@ -19,7 +34,7 @@ class AlbumService {
     }
 
     async findAll() {
-        return await prisma.album.findMany({
+        const albuns = await prisma.album.findMany({
             select: {
                 ID_Album: false,
                 Nome: true,
@@ -29,6 +44,10 @@ class AlbumService {
                 Data_Lancamento: true
             }
         });
+        if(!albuns){
+            throw new QueryError("Ainda não existem albuns cadastrados no sistema!")
+        }
+        return albuns;
     }
     
     async findById(id: number) {
