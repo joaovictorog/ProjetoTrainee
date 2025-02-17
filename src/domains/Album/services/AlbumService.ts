@@ -34,16 +34,7 @@ class AlbumService {
     }
 
     async findAll() {
-        const albuns = await prisma.album.findMany({
-            select: {
-                ID_Album: false,
-                Nome: true,
-                Capa: true,
-                Artista: true,
-                Num_Musicas: true,
-                Data_Lancamento: true
-            }
-        });
+        const albuns = await prisma.album.findMany();
         if(!albuns){
             throw new QueryError("Ainda não existem albuns cadastrados no sistema!")
         }

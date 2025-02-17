@@ -2,6 +2,7 @@ import AlbumService from "./AlbumService";
 import { prismaMock } from "../../../../config/singleton";
 import { mockReset } from "jest-mock-extended";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
+import { QueryError } from "../../../../errors/QueryError";
 
 describe("AlbumService", () => {
     beforeEach(()=>{
@@ -45,5 +46,34 @@ describe("AlbumService", () => {
             await expect(AlbumService.create(invalidAlbum as any)).rejects.toThrow(InvalidParamError);
         });
     });
+    describe("findAll", ()=>{
+        test("albuns existentes ==> retorna todos os albuns", async () => {
+            const existingAlbum = [{ 
+                ID_Album: 1,
+                Nome: "album",
+                ArtistaID: 1,
+                Data_Lancamento: new Date("2020-01-01"),
+                Capa: "capa.jpg",
+                Num_Musicas: 10
+            }];
+            prismaMock.album.findMany.mockResolvedValue(existingAlbum);
+        
+            await expect(AlbumService.findAll()).resolves.toEqual(existingAlbum);
+        });
+        test("albuns inexistentes ==> lança QueryError", async () => {
+            prismaMock.album.findMany.mockResolvedValue([]);
+            await expect(AlbumService.findAll()).rejects.toThrow(QueryError);
+        });
+    });
+    describe("findById", async () => {
+        const existingAlbum = [{ 
+            ID_Album: 1,
+            Nome: "album",
+            ArtistaID: 1,
+            Data_Lancamento: new Date("2020-01-01"),
+            Capa: "capa.jpg",
+            Num_Musicas: 10
+        }];
+    })
 }
 );
