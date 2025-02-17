@@ -66,14 +66,27 @@ describe("AlbumService", () => {
         });
     });
     describe("findById", async () => {
-        const existingAlbum = [{ 
-            ID_Album: 1,
-            Nome: "album",
-            ArtistaID: 1,
-            Data_Lancamento: new Date("2020-01-01"),
-            Capa: "capa.jpg",
-            Num_Musicas: 10
-        }];
+        test("album existe ==> retorna o album", async ()=>{
+            const existingAlbum = { 
+                ID_Album: 1,
+                Nome: "album",
+                ArtistaID: 1,
+                Data_Lancamento: new Date("2020-01-01"),
+                Capa: "capa.jpg",
+                Num_Musicas: 10
+            };
+            prismaMock.album.findUnique.mockResolvedValue(existingAlbum);
+
+            await expect(AlbumService.findById(existingAlbum.ID_Album)).resolves.toEqual(existingAlbum);
+        });
+        test("album inexistente ==> lança Query error", async () => {
+            prismaMock.album.findUnique.mockResolvedValue(null);
+            await expect(AlbumService.findById(1)).rejects.toThrow(QueryError);
+        });
+        test("ID não fornecido ==> lança InvalidParamError", async () => {
+             await expect(AlbumService.findById(null as any)).rejects.toThrow(InvalidParamError);
+        });
+
     })
 }
 );
