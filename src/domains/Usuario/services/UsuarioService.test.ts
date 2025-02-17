@@ -236,4 +236,25 @@ describe("UsuarioService", () => {
         });
     });
 
+    describe("delete", () => {
+        test("fornece ID de usuário válido ==> deleta o usuário", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg" };
+
+            const deletedUserResponse = { message: "Usuário deletado com sucesso!" };
+            
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+            prismaMock.usuario.delete.mockResolvedValue(usuario);
+
+            await expect(UsuarioService.delete(1, usuario)).resolves.toEqual(deletedUserResponse);
+        });
+
+        test("usuário não encontrado ==> lança QueryError", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: false, Foto: "jpg" };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(null);
+            
+            await expect(UsuarioService.delete(1, usuario)).rejects.toThrow(QueryError);
+        });
+    });
+
 });
