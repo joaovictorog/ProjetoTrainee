@@ -12,6 +12,14 @@ class UsuarioService {
     }
 
     async create(body: Usuario) {
+        if(body.Email == null || body.Email == undefined){
+			throw new InvalidParamError("Informe um email.");
+		}
+
+        if(body.Nome == null || body.Nome == undefined){
+			throw new InvalidParamError("Informe um nome.");
+		}
+
         const encrypted = await this.encryptPassword(body.Senha);
         const usuario = await prisma.usuario.create({
             data: {
@@ -27,18 +35,35 @@ class UsuarioService {
     }
 
     async findAll() {
-        return await prisma.usuario.findMany();
+        const usuario = await prisma.usuario.findMany();
+        if(!usuario || usuario.length === 0){
+			throw new QueryError("Nenhum usuário encontrado.");
+		}
+
+        return usuario;
     }
 
     async findByEmail(email: string) {
+        if(!email) {
+            throw new InvalidParamError("Informe um email.");
+        }
+
         const usuario = await prisma.usuario.findUnique({
             where: { Email: email },
         });
+
+        if(!usuario) {
+            throw new QueryError(`Usuário com email ${email} não encontrado.`);
+        }
     
         return usuario;
     }
 
     async findById(id: number) {
+        if(!id) {
+            throw new InvalidParamError("Informe um ID de usuário.");
+        }
+
         const usuario = await prisma.usuario.findUnique({
             where: { ID_Usuario: id },
         });
@@ -64,16 +89,24 @@ class UsuarioService {
             throw new QueryError(`Usuário com ID ${id} não encontrado.`);
         }
 
-        return userWithMusicas
+        return userWithMusicas;
     }
 
     async updateMusicas(id_user: number, body: Partial<Usuario>, id_musica: number, currentUser: Usuario) {
         const existingUser = await prisma.usuario.findUnique({
             where: { ID_Usuario: id_user },
         });
+
+        const existingMusic = await prisma.musica.findUnique({
+            where: { ID_Musica: id_musica },
+        });
     
         if (!existingUser) {
             throw new QueryError(`Usuário com ID ${id_user} não encontrado.`);
+        }
+
+        if (!existingMusic) {
+            throw new QueryError(`Música com ID ${id_musica} não encontrada.`);
         }
     
         if (!currentUser.isAdmin && currentUser.ID_Usuario !== id_user) {
@@ -105,6 +138,22 @@ class UsuarioService {
     }
 
     async deleteMusicas(id_user: number, id_musica:number) {
+        const existingUser = await prisma.usuario.findUnique({
+            where: { ID_Usuario: id_user },
+        });
+
+        const existingMusic = await prisma.musica.findUnique({
+            where: { ID_Musica: id_musica },
+        });
+
+        if (!existingUser) {
+            throw new QueryError(`Usuário com ID ${id_user} não encontrado.`);
+        }
+
+        if (!existingMusic) {
+            throw new QueryError(`Música com ID ${id_musica} não encontrada.`);
+        }
+        
         const updatedUser = await prisma.usuario.update({
             where: { ID_Usuario: id_user },
             data: {
@@ -118,7 +167,7 @@ class UsuarioService {
                }
         });
 
-        return updatedUser
+        return updatedUser;
     }
 
     async update(id: number, body: Partial<Usuario>, currentUser: Usuario) {
