@@ -2,6 +2,7 @@ import ArtistaService from "./ArtistaService";
 import { prismaMock } from "../../../../config/singleton";
 import { mockReset } from "jest-mock-extended";
 import { QueryError } from "../../../../errors/QueryError";
+import { query } from "express";
 
 describe("ArtistaService", () => {
     beforeEach(() => {
@@ -50,5 +51,36 @@ describe("ArtistaService", () => {
             await expect(ArtistaService.findById(1)).rejects.toThrow(QueryError);
         });
     });
+    describe("update", () => {
+        test("Dados Válidos ==> Atualiza o artista", async () => {
+            const artista = {
+                ID_Artista: 1,
+                Nome: "Artista",
+                Foto: null,
+                Num_Streams: 200
+            };
+            const updatedArtista = {
+                ID_Artista: 1,
+                Nome: "ArtistaAtualizado",
+                Foto: null,
+                Num_Streams: 200
+            };
+
+            prismaMock.artista.findUnique.mockResolvedValue(artista);
+            prismaMock.artista.update.mockResolvedValue(updatedArtista);
+            await expect(ArtistaService.update(1,updatedArtista)).resolves.toEqual(updatedArtista);
+        });
+        test("Artista não encontrado ==> lança QueryError", async () => {
+            const updatedArtista = {
+                ID_Artista: 1,
+                Nome: "ArtistaAtualizado",
+                Foto: null,
+                Num_Streams: 200
+            };
+            
+            prismaMock.artista.findUnique.mockResolvedValue(null);
+            await expect(ArtistaService.update(1, updatedArtista)).rejects.toThrow(QueryError);
+        });
+    })
 
 });
