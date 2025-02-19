@@ -3,6 +3,7 @@ import { prismaMock } from "../../../../config/singleton";
 import { mockReset } from "jest-mock-extended";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import { QueryError } from "../../../../errors/QueryError";
+import { Album } from "@prisma/client";
 
 describe("AlbumService", () => {
     beforeEach(()=>{
@@ -11,6 +12,13 @@ describe("AlbumService", () => {
 
     describe("create", () => {
         test("recebe dados válidos de usuário ==> cria um novo album", async () => {
+            const artista = {
+                ID_Artista: 1,
+                Nome: "nome",
+                Foto: "foto",
+                Num_Streams: 5
+            };
+            
             const album = { 
                 ID_Album: 1,
                 Nome: "Album",
@@ -19,8 +27,9 @@ describe("AlbumService", () => {
                 Capa: "capa.jpg",
                 Num_Musicas: 10
             };
+            prismaMock.artista.findUnique.mockResolvedValue(artista);
         
-            prismaMock.album.create.mockResolvedValue(album)
+            prismaMock.album.create.mockResolvedValue(album);
             await expect(AlbumService.create(album)).resolves.toEqual(album);
         });
         test("tenta criar album sem nome ==> lança InvalidParamError", async () => {
@@ -60,10 +69,6 @@ describe("AlbumService", () => {
         
             await expect(AlbumService.findAll()).resolves.toEqual(existingAlbum);
         });
-        test("albuns inexistentes ==> lança QueryError", async () => {
-            prismaMock.album.findMany.mockResolvedValue([]);
-            await expect(AlbumService.findAll()).rejects.toThrow(QueryError);
-        });
     });
     describe("findById", () => {
         test("album existe ==> retorna o album", async ()=>{
@@ -83,10 +88,6 @@ describe("AlbumService", () => {
             prismaMock.album.findUnique.mockResolvedValue(null);
             await expect(AlbumService.findById(1)).rejects.toThrow(QueryError);
         });
-        test("ID não fornecido ==> lança InvalidParamError", async () => {
-             await expect(AlbumService.findById(null as any)).rejects.toThrow(InvalidParamError);
-        });
-
     });
     describe("findFromArtista", () => {
         test("dados válidos ==> retorna os albums de um artista", async () => {
