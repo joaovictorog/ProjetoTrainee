@@ -84,7 +84,7 @@ class AlbumService {
         deletedAlbum = await prisma.album.delete({
             where: { ID_Album: id },
         });
-        return deletedAlbum;
+        return {message: "Album deletado com sucesso"};
     }
 
 }
