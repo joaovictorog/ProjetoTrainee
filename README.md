@@ -24,6 +24,7 @@ cd ProjetoTrainee
 
 Na raiz do diretório, crie o arquivo **.env** e adicione a seguinte estrutura:
 
+```env
 PORT = 3030
 SECRET_KEY = "mySecretKey"
 JWT_EXPIRATION = "3600"
@@ -35,19 +36,25 @@ DATABASE_NAME="projetotrainee"
 DATABASE_URL="mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:${DATABASE_PORT}/${DATABASE_NAME}"
 
 ### 2. Configuração do banco de dados com Docker
-Certifique-se de ter o **Docker** instalado. Em seguida, execute o seguinte comando para iniciar a api em um container Docker:
+Certifique-se de ter o **Docker** instalado. Em seguida, execute o seguinte comando para iniciar os containers Docker da api e do MySQL:
 
 docker-compose up -d
 
-Uma vez dentro do container, use o seguinte comando para que o banco de dados MySQL seja criado: 
+Dentro do container da api, use o seguinte comando para que o banco de dados MySQL seja criado: 
 
 npx prisma db push
 
-**Aviso 1**: Ao entrar no sistema, é necessário criar um primeiro usuário com permissões de admin. Use o seguinte comando:
+Ao entrar no container do MySQL, é necessário logar no mysql. Para isso, use o seguinte comando 
+
+mysql -u root -p 
+
+e insira sua senha definida no .env
+
+Após isso, é necessário criar um primeiro usuário com permissões de admin. Use o seguinte comando:
 
 INSERT INTO Usuario VALUES(1, 'admin@email.com', 'admin', 'senha', true, 'foto.png');
 
-**Aviso 2**: Ao realizar login de usuário, deve-se reiniciar o container antes de fazer outras requests. Para isso, execute o comando: 
+Ainda no container do MySQL, ao realizar login de usuário, deve-se reiniciar o container antes de fazer outras requests. Para isso, execute o comando: 
 
 docker restart api
 
