@@ -9,11 +9,11 @@ import AlbumService from "../../Album/services/AlbumService";
 class MusicaService {
     async create(body: Musica){
         if(body.Nome == null){
-            throw new InvalidParamError("A musica deve ter nome!");
+            throw new InvalidParamError("A música deve ter nome!");
         }
 
         if(body.Genero == null){
-            throw new InvalidParamError("A musica deve ter um gênero!");
+            throw new InvalidParamError("A música deve ter um gênero!");
         }
 
         if(body.ArtistaID == null){
