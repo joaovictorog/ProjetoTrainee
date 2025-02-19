@@ -2,7 +2,6 @@ import ArtistaService from "./ArtistaService";
 import { prismaMock } from "../../../../config/singleton";
 import { mockReset } from "jest-mock-extended";
 import { QueryError } from "../../../../errors/QueryError";
-import { query } from "express";
 
 describe("ArtistaService", () => {
     beforeEach(() => {
@@ -98,7 +97,7 @@ describe("ArtistaService", () => {
         test("Artista não encontrado ==> lança QueryError", async () => {
             prismaMock.artista.findUnique.mockResolvedValue(null);
             await expect(ArtistaService.delete(1)).rejects.toThrow(QueryError);
-        })
-    })
+        });
+    });
 
 });
