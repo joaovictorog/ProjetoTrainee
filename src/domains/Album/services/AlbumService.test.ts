@@ -87,6 +87,57 @@ describe("AlbumService", () => {
              await expect(AlbumService.findById(null as any)).rejects.toThrow(InvalidParamError);
         });
 
+    });
+    describe("update", async () => {
+        test("dados válidos ==> retorna o album atualizado", async () => {
+            const Album = { 
+                ID_Album: 1,
+                Nome: "album",
+                ArtistaID: 1,
+                Data_Lancamento: new Date("2020-01-01"),
+                Capa: "capa.jpg",
+                Num_Musicas: 10
+            };
+            
+            const updatedAlbum = { 
+                ID_Album: 1,
+                Nome: "album_atualizado",
+                ArtistaID: 1,
+                Data_Lancamento: new Date("2020-01-01"),
+                Capa: "capa.jpg",
+                Num_Musicas: 12
+            };
+
+            prismaMock.album.findUnique.mockResolvedValue(Album);
+            prismaMock.album.update.mockResolvedValue(updatedAlbum);
+
+            await expect(AlbumService.update(1, updatedAlbum)).toEqual(updatedAlbum);
+        });
+        test("album com ID informado inexistente ==> lança QueryError", async () => {
+            prismaMock.album.findUnique.mockResolvedValue(null);
+            
+            await expect(AlbumService.update(2, null as any)).toThrow(QueryError);
+        });
+    });
+    describe("delete", async () => {
+        test("dados válidos ==> album deletedo com sucesso", async () => {
+            const Album = { 
+                ID_Album: 1,
+                Nome: "album",
+                ArtistaID: 1,
+                Data_Lancamento: new Date("2020-01-01"),
+                Capa: "capa.jpg",
+                Num_Musicas: 10
+            };
+            const deletedAlbumResponse = { message: "Album deletado com sucesso" };
+
+            prismaMock.album.findUnique.mockResolvedValue(Album);
+            await expect(AlbumService.delete(1)).toEqual(deletedAlbumResponse);
+        });
+        test("Album não encontrado ==> lança QueryError", async () => {
+            prismaMock.album.findUnique.mockResolvedValue(null);
+            await expect(AlbumService.delete(2)).toThrow(QueryError);
+        })
     })
 }
 );
