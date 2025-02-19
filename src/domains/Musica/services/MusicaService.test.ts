@@ -26,7 +26,7 @@ describe("MusicaService", () => {
             await expect(MusicaService.create(musica)).resolves.toEqual(musica);
         });
 
-        test("tenta criar muisica sem nome ==> lança InvalidParamError", async () => {
+        test("tenta criar música sem nome ==> lança InvalidParamError", async () => {
             const musica = {
                 ID_Musica: 1,
                 Nome: null,
@@ -38,5 +38,17 @@ describe("MusicaService", () => {
             };
             await expect(MusicaService.create(musica as any)).resolves.toThrow(InvalidParamError);
         })
-    });
 
+        test("tenta criar música sem gênero ==> lança InvalidParamError", async () => {
+            const musica = {
+                ID_Musica: 1,
+                Nome: "Música Teste",
+                ArtistaID: 2,
+                Genero: null,
+                AlbumID: 3,
+                Num_Streams: 10000,
+                Data_Lancamento: new Date("2023-01-01"),
+            };
+            await expect(MusicaService.create(musica as any)).resolves.toThrow(InvalidParamError);
+        })
+    });
