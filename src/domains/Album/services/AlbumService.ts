@@ -54,6 +54,24 @@ class AlbumService {
         return album;
     }
 
+    async findFromArtista(id: number) {
+        const existingArtista = await prisma.artista.findUnique({
+            where: {
+                ID_Artista : id
+            }
+        })
+        if(!existingArtista){
+            throw new QueryError("O artista com id ${ID} não foi encontrado");
+        }
+
+        const albunsArtista = await prisma.album.findMany({
+            where: { ArtistaID : id }
+        })
+
+        return albunsArtista;
+
+    }
+
     async update(id: number, body: Partial<Album>) {
         const existingAlbum = await prisma.album.findUnique({
             where: { ID_Album: id}
