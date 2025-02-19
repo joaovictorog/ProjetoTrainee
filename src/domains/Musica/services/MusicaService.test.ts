@@ -142,4 +142,30 @@ describe("MusicaService", () => {
             await expect(MusicaService.findAll()).rejects.toThrow(QueryError);
         })
     });
+
+    describe("findById", () => {
+        test("música existe ==> retorna a música", async ()=>{
+            const existingMusica = { 
+                ID_Musica: 99,
+                Nome: "Musicaz 3",
+                ArtistaID: 2,
+                Genero: "Pop",
+                AlbumID: 1,
+                Num_Streams: 500,
+                Data_Lancamento: new Date("2022-05-05")
+            };
+            prismaMock.musica.findUnique.mockResolvedValue(existingMusica);
+
+            await expect(MusicaService.findById(existingMusica.ID_Musica)).resolves.toEqual(existingMusica);
+        });
+        test("ID não fornecido ==> lança InvalidParamError", async () => {
+            await expect(MusicaService.findById(null as any)).rejects.toThrow(InvalidParamError);
+       });
+        test("música inexistente ==> lança QueryError", async () => {
+            prismaMock.musica.findUnique.mockResolvedValue(null);
+            await expect(MusicaService.findById(999)).rejects.toThrow(QueryError);
+        });
+    });
+
+    
 });
