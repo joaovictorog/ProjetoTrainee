@@ -17,8 +17,8 @@ Este é um serviço de streaming de músicas implementado com **Node.js (Express
 
 ### 1. Clone o repositório
 
-git clone https://github.com/usuario/nome-do-projeto.git
-cd nome-do-projeto
+git clone https://github.com/joaovictorog/ProjetoTrainee.git
+cd ProjetoTrainee
 
 ### 2. Configuração do banco de dados com Docker
 Certifique-se de ter o **Docker** instalado. Em seguida, execute o seguinte comando para iniciar o banco de dados MySQL em um container Docker:
