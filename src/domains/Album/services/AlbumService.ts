@@ -8,16 +8,16 @@ class AlbumService {
     async create(body: Album){
         if(body.Nome == null){
             throw new InvalidParamError("O album deve ter um nome!");
-        }
+        };
 
         if(body.ArtistaID == null){
             throw new InvalidParamError("O album deve pertencer a um artista!");
-        }
+        };
 
         const existingArtista = await ArtistaService.findById(body.ArtistaID);
         if(!existingArtista){
             throw new InvalidParamError("O arista com id ${body.ArtistaID} não existe!");
-        }
+        };
         
         const Album = await prisma.album.create({
             data: {
@@ -37,20 +37,20 @@ class AlbumService {
         const albuns = await prisma.album.findMany();
         if(!albuns){
             throw new QueryError("Ainda não existem albuns cadastrados no sistema!")
-        }
+        };
         return albuns;
     }
     
     async findById(id: number) {
         if(id == null){
             throw new InvalidParamError("Request não possui um ID");
-        }
+        };
         const album = await prisma.album.findUnique({
             where: { ID_Album: id },
         });
         if(!album){
             throw new QueryError('Album com ID informado não encontrado');
-        }
+        };
 
         return album;
     }
@@ -58,11 +58,11 @@ class AlbumService {
     async update(id: number, body: Partial<Album>) {
         let updatedAlbum = await prisma.album.findUnique({
             where: { ID_Album: id}
-        })
+        });
 
         if(!updatedAlbum){
             throw new QueryError('Album com ID informado não encontrado');
-        }
+        };
         
         updatedAlbum = await prisma.album.update({
             where: { ID_Album: id },
@@ -79,7 +79,7 @@ class AlbumService {
 
         if(!deletedAlbum){
             throw new QueryError('Album com ID informado não encontrado');
-        }
+        };
 
         deletedAlbum = await prisma.album.delete({
             where: { ID_Album: id },
