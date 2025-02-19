@@ -10,7 +10,7 @@ const router = Router();
 
 router.post("/create" ,async (req: Request, res: Response, next: NextFunction) => {
     try {
-        let novoUsuario = await UsuarioService.findByEmail(req.body.Email);
+        let novoUsuario = await UsuarioService.checkEmail(req.body.Email);
         if(novoUsuario !== null){
             throw new QueryError("Já existe um usuario com esse email")
         }

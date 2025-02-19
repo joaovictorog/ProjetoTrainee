@@ -43,6 +43,14 @@ class UsuarioService {
         return usuario;
     }
 
+    async checkEmail(email: string) {
+        const usuario = await prisma.usuario.findUnique({
+            where: { Email: email },
+        });
+
+        return usuario;
+    }
+
     async findByEmail(email: string) {
         if(!email) {
             throw new InvalidParamError("Informe um email.");
