@@ -22,13 +22,13 @@ describe("MusicaService", () => {
     describe("create", () => {
         test("recebe dados válidos de música ==> cria uma nova música", async () => {
             const musica = {
-            ID_Musica: 1,
-            Nome: "Música Teste",
-            ArtistaID: 2,
-            Genero: "Pop",
-            AlbumID: 3,
-            Num_Streams: 10000,
-            Data_Lancamento: new Date("2023-01-01"),
+                ID_Musica: 1,
+                Nome: "Música Teste",
+                ArtistaID: 2,
+                Genero: "Pop",
+                AlbumID: 3,
+                Num_Streams: 10000,
+                Data_Lancamento: new Date("2023-01-01"),
             };
 
             (ArtistaService.findById as jest.Mock).mockResolvedValue({
@@ -40,7 +40,6 @@ describe("MusicaService", () => {
   
             await expect(MusicaService.create(musica)).resolves.toEqual(musica);
         });
-
         test("tenta criar música sem nome ==> lança InvalidParamError", async () => {
             const musica = {
                 ID_Musica: 1,
@@ -53,7 +52,6 @@ describe("MusicaService", () => {
             };
             await expect(MusicaService.create(musica as any)).rejects.toThrow(InvalidParamError);
         });
-
         test("tenta criar música sem gênero ==> lança InvalidParamError", async () => {
             const invalidMusica = {
                 ID_Musica: 1,
@@ -66,23 +64,25 @@ describe("MusicaService", () => {
             };
             await expect(MusicaService.create(invalidMusica as any)).rejects.toThrow(InvalidParamError);
         });
-
         test("tenta criar uma musica sem pertencer a um artista ==> lança InvalidParamError", async () => {
             const invalidMusica = { 
                 ID_Musica: 1,
                 Nome: "Música Teste",
-                ArtistaID: null,
+                ArtistaID: 999,
                 Genero: "Pop",
                 AlbumID: 3,
                 Num_Streams: 10000,
                 Data_Lancamento: new Date("2023-01-01"),
             };
+            (ArtistaService.findById as jest.Mock).mockResolvedValue(null);
+
             await expect(MusicaService.create(invalidMusica as any)).rejects.toThrow(InvalidParamError);
         });
     });
     describe("findFromArtist", () => {
         test("artista válido fornecido => retorna musicas do artista", async () => {
-            const musicasArtista = [{
+            const musicasArtista = [
+                {
                 ID_Musica: 5,
                 Nome: "Música Teste",
                 ArtistaID: 6,
@@ -104,16 +104,42 @@ describe("MusicaService", () => {
                     Capa: "capa.jpg",
                     Num_Musicas: 1
                 },
-            }];
+            }
+        ];
+
             prismaMock.musica.findMany.mockResolvedValue(musicasArtista);
 
             await expect(MusicaService.findFromArtist(6)).resolves.toEqual(musicasArtista);
         });
-    });
- 
         test("artista inválido ==> lança QueryError", async () => {
             prismaMock.musica.findMany.mockResolvedValue(null as any);
 
             await expect(MusicaService.findFromArtist(123)).rejects.toThrow(QueryError);
         });
+    });
+    
+    describe("findAll", () => {
+        test("música existente ==> retorna todas as músicas", async () => {
+            const musica = [
+            {
+                ID_Musica: 10,
+                Nome: "Musica Teste2",
+                ArtistaID: 2,
+                Genero: "Punk",
+                AlbumID: 5,
+                Num_Streams: 1000,
+                Data_Lancamento: new Date("2005-02-12"),
+                Artista: { /* ... */ },
+                Album: { /* ... */ },
+            },
+        ];
+        prismaMock.musica.findMany.mockResolvedValue(musica);
+
+        await expect(MusicaService.findAll()).resolves.toEqual(musica);
+        });
+        test("música inexistente ==> lança QuerryError", async () => {
+            prismaMock.musica.findMany.mockResolvedValue([]);
+            await expect(MusicaService.findAll()).rejects.toThrow(QueryError);
+        })
+    });
 });
