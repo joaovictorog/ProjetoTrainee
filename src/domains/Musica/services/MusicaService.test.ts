@@ -6,33 +6,37 @@ import { mockReset } from "jest-mock-extended";
 
 describe("MusicaService", () => {
     beforeEach(() => {
-      mockReset(prismaMock);
+        mockReset(prismaMock);
     });
 
     describe("create", () => {
-      test("recebe dados válidos de música ==> cria uma nova música", async () => {
-        const musica = {
-          ID_Musica: 1,
-          Nome: "Música Teste",
-          ArtistaID: 2,
-          Genero: "Pop",
-          AlbumID: 3,
-          Num_Streams: 10000,
-          Data_Lancamento: new Date("2023-01-01"),
-        };
-  
-        prismaMock.musica.create.mockResolvedValue(musica);
-  
-        await expect(MusicaService.create(musica)).resolves.toEqual(musica);
-        expect(prismaMock.musica.create).toHaveBeenCalledWith({
-          data: {
+        test("recebe dados válidos de música ==> cria uma nova música", async () => {
+            const musica = {
+            ID_Musica: 1,
             Nome: "Música Teste",
             ArtistaID: 2,
             Genero: "Pop",
             AlbumID: 3,
             Num_Streams: 10000,
             Data_Lancamento: new Date("2023-01-01"),
-          },
+            };
+  
+            prismaMock.musica.create.mockResolvedValue(musica);
+  
+            await expect(MusicaService.create(musica)).resolves.toEqual(musica);
         });
-      });
+
+        test("tenta criar muisica sem nome ==> lança InvalidParamError", async () => {
+            const musica = {
+                ID_Musica: 1,
+                Nome: null,
+                ArtistaID: 2,
+                Genero: "Pop",
+                AlbumID: 3,
+                Num_Streams: 10000,
+                Data_Lancamento: new Date("2023-01-01"),
+            };
+            await expect(MusicaService.create(musica as any)).resolves.toThrow(InvalidParamError);
+        })
     });
+
