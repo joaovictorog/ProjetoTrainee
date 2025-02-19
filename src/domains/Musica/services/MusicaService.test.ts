@@ -51,7 +51,7 @@ describe("MusicaService", () => {
                 Num_Streams: 10000,
                 Data_Lancamento: new Date("2023-01-01"),
             };
-            await expect(MusicaService.create(musica as any)).resolves.toThrow(InvalidParamError);
+            await expect(MusicaService.create(musica as any)).rejects.toThrow(InvalidParamError);
         });
 
         test("tenta criar música sem gênero ==> lança InvalidParamError", async () => {
@@ -64,14 +64,14 @@ describe("MusicaService", () => {
                 Num_Streams: 10000,
                 Data_Lancamento: new Date("2023-01-01"),
             };
-            await expect(MusicaService.create(invalidMusica as any)).resolves.toThrow(InvalidParamError);
+            await expect(MusicaService.create(invalidMusica as any)).rejects.toThrow(InvalidParamError);
         });
 
         test("tenta criar uma musica sem pertencer a um artista ==> lança InvalidParamError", async () => {
             const invalidMusica = { 
                 ID_Musica: 1,
                 Nome: "Música Teste",
-                ArtistaID: 1,
+                ArtistaID: null,
                 Genero: "Pop",
                 AlbumID: 3,
                 Num_Streams: 10000,
@@ -104,7 +104,16 @@ describe("MusicaService", () => {
                     Capa: "capa.jpg",
                     Num_Musicas: 1
                 },
-            }]
-        })
-    })
+            }];
+            prismaMock.musica.findMany.mockResolvedValue(musicasArtista);
+
+            await expect(MusicaService.findFromArtist(6)).resolves.toEqual(musicasArtista);
+        });
+    });
+ 
+        test("artista inválido ==> lança QueryError", async () => {
+            prismaMock.musica.findMany.mockResolvedValue(null as any);
+
+            await expect(MusicaService.findFromArtist(123)).rejects.toThrow(QueryError);
+        });
 });
