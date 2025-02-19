@@ -199,4 +199,38 @@ describe("MusicaService", () => {
             await expect(MusicaService.update(1, null as any)).rejects.toThrow(QueryError);
         });
     });
+
+    describe("delete", () => {
+        test("dados válidos ==> música deletada", async () => {
+            const existingMusica = {
+                ID_Musica: 9,
+                Nome: "Musica",
+                ArtistaID: 3,
+                Genero: "Pop",
+                AlbumID: 4,
+                Num_Streams: 500,
+                Data_Lancamento: new Date("2022-05-05")
+            };
+            const deletedMusica = {message: "Música deletada com sucesso!"};
+
+            prismaMock.musica.findUnique.mockResolvedValue(existingMusica);
+            prismaMock.musica.delete.mockResolvedValue(existingMusica);
+
+            await expect(MusicaService.delete(9)).resolves.toEqual(deletedMusica);
+        });
+        test("música não encontrada ==> lança QuerryError", async () => {
+            const existingMusica = {
+                ID_Musica: 9,
+                Nome: "Musica 1",
+                ArtistaID: 3,
+                Genero: "Pop",
+                AlbumID: 4,
+                Num_Streams: 500,
+                Data_Lancamento: new Date("2022-05-05")
+            };
+
+            prismaMock.musica.findUnique.mockResolvedValue(null);
+            await expect(MusicaService.delete(9)).rejects.toThrow(QueryError);
+        });
+    });
 });
