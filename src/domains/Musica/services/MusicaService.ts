@@ -53,12 +53,11 @@ class MusicaService {
     }
 
     async findAll() {
-        return await prisma.musica.findMany({
-            include: {
-                Artista: true,
-                Album: true,
-            },
-        });
+            const musica = await prisma.musica.findMany();
+            if(musica.length === 0){
+                throw new QueryError("Nenhuma musica encontrada.");
+            }
+            return musica;
     }
 
     async findById(id: number) {
@@ -75,7 +74,7 @@ class MusicaService {
                 Album: true,
             },
         });
-        return musica
+        return musica;
     }
 
     async update(id: number, body: Partial<Musica>) {
