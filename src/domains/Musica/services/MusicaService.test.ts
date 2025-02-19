@@ -106,7 +106,8 @@ describe("MusicaService", () => {
                 },
             }
         ];
-
+            
+            prismaMock.artista.findUnique.mockResolvedValue({ Nome: "Cleiton Rasta", Num_Streams: 20000, ID_Artista: 6, Foto: "foto.jpg"});
             prismaMock.musica.findMany.mockResolvedValue(musicasArtista);
 
             await expect(MusicaService.findFromArtist(6)).resolves.toEqual(musicasArtista);
