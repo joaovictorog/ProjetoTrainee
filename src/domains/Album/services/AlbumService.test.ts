@@ -88,6 +88,32 @@ describe("AlbumService", () => {
         });
 
     });
+    describe("findFromArtista", () => {
+        test("dados válidos ==> retorna os albums de um artista", async () => {
+            const Artista = {
+                ID_Artista : 1,
+                Nome: "nome",
+                Foto: "jpg",
+                Num_Streams: 5
+            };
+
+            const Album = [{ 
+                ID_Album: 1,
+                Nome: "album",
+                ArtistaID: 1,
+                Data_Lancamento: new Date("2020-01-01"),
+                Capa: "capa.jpg",
+                Num_Musicas: 10
+            }];
+            prismaMock.artista.findUnique.mockResolvedValue(Artista);
+            prismaMock.album.findMany.mockResolvedValue(Album);
+            await expect(AlbumService.findFromArtista(1)).resolves.toEqual(Album);
+        });
+        test("artista inexistente ==> lança query error", async () => {
+            prismaMock.artista.findUnique.mockResolvedValue(null);
+            await expect(AlbumService.findFromArtista(1)).rejects.toThrow(QueryError);
+        })
+    })
     describe("update", () => {
         test("dados válidos ==> retorna o album atualizado", async () => {
             const Album = { 

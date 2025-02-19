@@ -4,6 +4,10 @@ import { QueryError } from "../../../../errors/QueryError";
 
 class ArtistaService {
     async create(body: Artista) {
+        if(body.Nome == null){
+            throw new QueryError("O artista deve ter um nome!")
+        }
+        
         const artista = await prisma.artista.create({
             data: {
                 Nome: body.Nome.charAt(0).toUpperCase() + body.Nome.substring(1),

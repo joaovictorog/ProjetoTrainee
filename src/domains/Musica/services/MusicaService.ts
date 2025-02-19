@@ -39,6 +39,15 @@ class MusicaService {
     }
 
     async findFromArtist(id: number){
+        const existingArtista = await prisma.artista.findUnique({
+            where: {
+                ID_Artista : id
+            }
+        })
+        if(!existingArtista){
+            throw new QueryError("O artista com id ${ID} não foi encontrado");
+        }
+        
         const musicasArtista = await prisma.musica.findMany({
             where: { ArtistaID: id},
             include: {
