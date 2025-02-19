@@ -81,6 +81,24 @@ describe("ArtistaService", () => {
             prismaMock.artista.findUnique.mockResolvedValue(null);
             await expect(ArtistaService.update(1, updatedArtista)).rejects.toThrow(QueryError);
         });
+    });
+    describe("delete", () => {
+        test("Artista existe ==> Artista deletado", async () => {
+            const Artista = {
+                ID_Artista: 1,
+                Nome: "Artista",
+                Foto: null,
+                Num_Streams: 200
+            };
+            prismaMock.artista.findUnique.mockResolvedValue(Artista);
+            const deletedArtistaMsg = { message: "Artista deletado com sucesso!" };
+            prismaMock.artista.delete.mockResolvedValue(Artista);
+            await expect(ArtistaService.delete(1)).resolves.toEqual(deletedArtistaMsg);
+        });
+        test("Artista não encontrado ==> lança QueryError", async () => {
+            prismaMock.artista.findUnique.mockResolvedValue(null);
+            await expect(ArtistaService.delete(1)).rejects.toThrow(QueryError);
+        })
     })
 
 });
