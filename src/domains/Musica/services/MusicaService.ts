@@ -2,9 +2,25 @@ import { Musica } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 import { QueryError } from "../../../../errors/QueryError";
 import { InvalidRouteError } from "../../../../errors/InvalidRouteError";
+import { InvalidParamError } from "../../../../errors/InvalidParamError";
+import ArtistaService from "../../Artista/services/ArtistaService";
+import AlbumService from "../../Album/services/AlbumService";
 
 class MusicaService {
     async create(body: Musica){
+        if(body.Nome == null){
+            throw new InvalidParamError("A musica deve ter nome!");
+        }
+
+        if(body.ArtistaID == null){
+            throw new InvalidParamError("A música deve pertencer a um artista!");
+        }
+
+        const existingArtista = await ArtistaService.findById(body.ArtistaID);
+        if(!existingArtista){
+            throw new InvalidParamError("O arista com id ${body.ArtistaID} não existe!");
+        }
+
         const Musica = await prisma.musica.create({
             data: {
                 Nome: body.Nome,
