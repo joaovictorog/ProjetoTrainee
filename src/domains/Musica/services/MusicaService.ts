@@ -4,7 +4,6 @@ import { QueryError } from "../../../../errors/QueryError";
 import { InvalidRouteError } from "../../../../errors/InvalidRouteError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import ArtistaService from "../../Artista/services/ArtistaService";
-import AlbumService from "../../Album/services/AlbumService";
 
 class MusicaService {
     async create(body: Musica){
