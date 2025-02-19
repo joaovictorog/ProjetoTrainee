@@ -25,6 +25,15 @@ router.get("/:id", verifyJWT, checkRole(["admin", "user"]), async (req:Request, 
     } 
 });
 
+router.get("/artista/:id", verifyJWT, checkRole(["admin", "user"]),async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        const albunsByArtista = await AlbumService.findFromArtista(Number(req.params.id));
+        res.status(statusCodes.SUCCESS).json(albunsByArtista);
+    } catch (error) {
+        next(error)
+    }
+});
+
 router.post("/create", verifyJWT, checkRole(["admin"]), async (req:Request, res:Response, next:NextFunction) => {
     try {
         const novoAlbum = await AlbumService.create(req.body)
