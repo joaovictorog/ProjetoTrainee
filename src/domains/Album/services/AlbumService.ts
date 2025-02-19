@@ -46,8 +46,10 @@ class AlbumService {
             throw new InvalidParamError("Request não possui um ID");
         };
         const album = await prisma.album.findUnique({
-            where: { ID_Album: id },
-        });
+            where: {
+                ID_Album : id,
+            }
+        })
         if(!album){
             throw new QueryError('Album com ID informado não encontrado');
         };
