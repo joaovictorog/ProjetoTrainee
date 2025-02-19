@@ -42,9 +42,6 @@ class AlbumService {
     }
     
     async findById(id: number) {
-        if(id == null){
-            throw new InvalidParamError("Request não possui um ID");
-        };
         const album = await prisma.album.findUnique({
             where: {
                 ID_Album : id,
@@ -58,15 +55,15 @@ class AlbumService {
     }
 
     async update(id: number, body: Partial<Album>) {
-        let updatedAlbum = await prisma.album.findUnique({
+        const existingAlbum = await prisma.album.findUnique({
             where: { ID_Album: id}
         });
 
-        if(!updatedAlbum){
+        if(!existingAlbum){
             throw new QueryError('Album com ID informado não encontrado');
         };
         
-        updatedAlbum = await prisma.album.update({
+        const updatedAlbum = await prisma.album.update({
             where: { ID_Album: id },
             data: body,
         });
