@@ -20,15 +20,36 @@ Este é um serviço de streaming de músicas implementado com **Node.js (Express
 git clone https://github.com/joaovictorog/ProjetoTrainee.git
 cd ProjetoTrainee
 
+### 2. Crie o arquivo .env
+
+Na raiz do diretório, crie o arquivo **.env** e adicione a seguinte estrutura:
+
+PORT = 3030
+SECRET_KEY = "mySecretKey"
+JWT_EXPIRATION = "3600"
+NODE_ENV = "development"
+APP_URL="http://localhost:3000/"
+DATABASE_PORT="3306"
+MYSQL_ROOT_PASSWORD=12345
+DATABASE_NAME="projetotrainee"
+DATABASE_URL="mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:${DATABASE_PORT}/${DATABASE_NAME}"
+
 ### 2. Configuração do banco de dados com Docker
-Certifique-se de ter o **Docker** instalado. Em seguida, execute o seguinte comando para iniciar o banco de dados MySQL em um container Docker:
+Certifique-se de ter o **Docker** instalado. Em seguida, execute o seguinte comando para iniciar a api em um container Docker:
 
 docker-compose up -d
 
-## Rodando o servidor
-Para rodar o servidor Express, use o seguinte comando:
+Uma vez dentro do container, use o seguinte comando para que o banco de dados MySQL seja criado: 
 
-npm start
+npx prisma db push
+
+**Aviso 1**: Ao entrar no sistema, é necessário criar um primeiro usuário com permissões de admin. Use o seguinte comando:
+
+INSERT INTO Usuario VALUES(1, 'admin@email.com', 'admin', 'senha', true, 'foto.png');
+
+**Aviso 2**: Ao realizar login de usuário, deve-se reiniciar o container antes de fazer outras requests. Para isso, execute o comando: 
+
+docker restart api
 
 ## Executando os testes
 Execute os testes para garantir que todas as funcionalidades estão funcionando corretamente:
