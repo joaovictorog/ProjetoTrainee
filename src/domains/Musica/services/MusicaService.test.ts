@@ -51,4 +51,17 @@ describe("MusicaService", () => {
             };
             await expect(MusicaService.create(musica as any)).resolves.toThrow(InvalidParamError);
         })
+
+        test("tenta criar uma musica sem pertencer a um artista ==> lança InvalidParamError", async () => {
+            const invalidMusica = { 
+                ID_Musica: 1,
+                Nome: "Música Teste",
+                ArtistaID: 1,
+                Genero: "Pop",
+                AlbumID: 3,
+                Num_Streams: 10000,
+                Data_Lancamento: new Date("2023-01-01"),
+            };
+            await expect(MusicaService.create(invalidMusica as any)).rejects.toThrow(InvalidParamError);
+        });
     });

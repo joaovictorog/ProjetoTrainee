@@ -12,6 +12,10 @@ class MusicaService {
             throw new InvalidParamError("A musica deve ter nome!");
         }
 
+        if(body.Genero == null){
+            throw new InvalidParamError("A musica deve ter um gênero!");
+        }
+
         if(body.ArtistaID == null){
             throw new InvalidParamError("A música deve pertencer a um artista!");
         }
