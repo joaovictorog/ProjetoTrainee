@@ -1,7 +1,7 @@
 services:
   mysql: 
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
+    env_file:
+      - ./.env
     container_name: mysql
     image: mysql:latest
     expose:
