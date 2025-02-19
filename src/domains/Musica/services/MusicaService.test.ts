@@ -167,5 +167,36 @@ describe("MusicaService", () => {
         });
     });
 
-    
+    describe("update", () => {
+        test("dados válidos ==> retorna música atualizada", async () => {
+            const existingMusica = { 
+                ID_Musica: 1,
+                Nome: "Musica",
+                ArtistaID: 3,
+                Genero: "Pop",
+                AlbumID: 4,
+                Num_Streams: 500,
+                Data_Lancamento: new Date("2022-05-05")
+            };
+
+            const updatedMusica = {
+                ID_Musica: 1,
+                Nome: "Musica Nova",
+                ArtistaID: 3,
+                Genero: "Pop",
+                AlbumID: 4,
+                Num_Streams: 500,
+                Data_Lancamento: new Date("2022-05-05")
+            };
+
+            prismaMock.musica.findUnique.mockResolvedValue(existingMusica);
+            prismaMock.musica.update.mockResolvedValue(updatedMusica);
+
+            await expect(MusicaService.update(1, {Nome: "Musica Nova"})).resolves.toEqual(updatedMusica);
+        });
+        test("música com o ID informado inexistente ==> lança QuerryError", async () => {
+            prismaMock.musica.findUnique.mockResolvedValue(null);
+            await expect(MusicaService.update(1, null as any)).rejects.toThrow(QueryError);
+        });
+    });
 });
