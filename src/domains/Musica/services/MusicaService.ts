@@ -24,7 +24,7 @@ class MusicaService {
             throw new InvalidParamError("O arista com id ${body.ArtistaID} não existe!");
         }
 
-        const Musica = await prisma.musica.create({
+        const musica = await prisma.musica.create({
             data: {
                 Nome: body.Nome,
                 ArtistaID: body.ArtistaID,
@@ -35,7 +35,7 @@ class MusicaService {
             },
         });
 
-        return Musica;
+        return musica;
     }
 
     async findFromArtist(id: number){
@@ -61,19 +61,15 @@ class MusicaService {
     }
 
     async findById(id: number) {
-        const existingMusica = await prisma.musica.findUnique({
-            where: {ID_Musica:id}
-        })
-        if(!existingMusica){
-            throw new InvalidRouteError('Não existe musica com esse id')
+        if (id == null) {
+            throw new InvalidParamError("Request não possui um ID");
         }
         const musica = await prisma.musica.findUnique({
-            where: { ID_Musica: id },
-            include: {
-                Artista: true,
-                Album: true,
-            },
+            where: {ID_Musica:id}
         });
+        if (!musica) {
+            throw new QueryError("Não existe música com esse id");
+        }
         return musica;
     }
 
@@ -82,7 +78,7 @@ class MusicaService {
             where: {ID_Musica:id}
         })
         if(!existingMusica){
-            throw new InvalidRouteError('Não existe musica com esse id')
+            throw new QueryError('Não existe musica com esse id')
         }
         const updatedMusica = await prisma.musica.update({
             where: { ID_Musica: id },
@@ -96,12 +92,12 @@ class MusicaService {
             where: {ID_Musica:id}
         })
         if(!existingMusica){
-            throw new InvalidRouteError('Não existe musica com esse id')
+            throw new QueryError('Não existe musica com esse id')
         }
         const deletedMusica = await prisma.musica.delete({
             where: { ID_Musica: id },
         });
-        return deletedMusica;
+        return {message: "Música deletada com sucesso!"};
     }
 }
 
