@@ -45,7 +45,7 @@ class MusicaService {
             }
         })
         if(!existingArtista){
-            throw new QueryError("O artista com id ${ID} não foi encontrado");
+            throw new QueryError(`O artista com id ${id} não foi encontrado`);
         }
         
         const musicasArtista = await prisma.musica.findMany({
