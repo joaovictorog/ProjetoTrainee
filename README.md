@@ -34,7 +34,7 @@ DATABASE_PORT="3306"
 MYSQL_ROOT_PASSWORD=12345
 DATABASE_NAME="projetotrainee"
 DATABASE_URL="mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:${DATABASE_PORT}/${DATABASE_NAME}"
-
+```
 ### 2. Configuração do banco de dados com Docker
 Certifique-se de ter o **Docker** instalado. Em seguida, execute o seguinte comando para iniciar os containers Docker da api e do MySQL:
 
