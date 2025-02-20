@@ -203,12 +203,24 @@ describe("UsuarioService", () => {
         test("fornce dados válidos de usuário ==> atualiza usuário", async () => {
             const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: true, Foto: "jpg" };
 
+            const body = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", isAdmin: true, Foto: "jpg" }
+
             const updatedUsuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario2", Senha: "encrypted", isAdmin: true, Foto: "jpg" };
 
             prismaMock.usuario.findUnique.mockResolvedValue(usuario);
             prismaMock.usuario.update.mockResolvedValue(updatedUsuario);
 
-            await expect(UsuarioService.update(1, updatedUsuario, usuario)).resolves.toEqual(updatedUsuario);
+            await expect(UsuarioService.update(1, body, usuario)).resolves.toEqual(updatedUsuario);
+        });
+
+        test("usuario tenta editar senha por essa rota ==> lança invalidParamError", async () => {
+            const usuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario", Senha: "encrypted", isAdmin: true, Foto: "jpg" };
+            const updatedUsuario = { ID_Usuario: 1, Email: "teste@.com", Nome: "usuario2", Senha: "encrypted", isAdmin: true, Foto: "jpg" };
+
+            prismaMock.usuario.findUnique.mockResolvedValue(usuario);
+            prismaMock.usuario.update.mockResolvedValue(updatedUsuario);
+
+            await expect(UsuarioService.update(1, updatedUsuario, usuario)).rejects.toThrow(InvalidParamError);
         });
 
         test("usuário não encontrado ==> lança QueryError", async () => {

@@ -43,6 +43,14 @@ class UsuarioService {
         return usuario;
     }
 
+    async checkEmail(email: string) {
+        const usuario = await prisma.usuario.findUnique({
+            where: { Email: email },
+        });
+
+        return usuario;
+    }
+
     async findByEmail(email: string) {
         if(!email) {
             throw new InvalidParamError("Informe um email.");
@@ -186,9 +194,9 @@ class UsuarioService {
         if (!currentUser.isAdmin && body.hasOwnProperty("isAdmin")) {
             throw new InvalidParamError("Você não tem permissão para alterar o campo isAdmin.");
         }
-    
-        if (body.Senha) {
-            body.Senha = await this.encryptPassword(body.Senha);
+
+        if (body.hasOwnProperty("Senha")) {
+            throw new InvalidParamError("Você só pode alterar sua senha na aba account/password.");
         }
     
         const updatedUser = await prisma.usuario.update({
