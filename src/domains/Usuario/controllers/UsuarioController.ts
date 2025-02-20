@@ -137,6 +137,6 @@ router.delete("/delete/:id", verifyJWT, checkRole(["admin"]), async (req: Reques
     } catch (error) {
         next(error);
     }
-});
+}, logout);
 
 export default router;
